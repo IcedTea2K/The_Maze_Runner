@@ -1,6 +1,6 @@
 public class MazeMaker { // create the maze
     PVector size; 
-    PVector loc;    
+    final PVector loc;    
     int rows;
     int columns;
 
@@ -122,5 +122,9 @@ public class MazeMaker { // create the maze
     void display(){
         drawBackground();
         drawGrid();
+    }
+
+    PVector getLoc(){
+        return loc; 
     }
 }

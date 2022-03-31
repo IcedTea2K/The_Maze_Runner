@@ -18,9 +18,11 @@ public class The_Maze_Runner extends PApplet {
 
 
 MazeMaker mainMaze;
+Player mainPlayer;
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
+    mainPlayer = new Player(mainMaze.getLoc());
 }
 
 public void draw() {
@@ -29,7 +31,7 @@ public void draw() {
 }
 public class MazeMaker { // create the maze
     PVector size; 
-    PVector loc;    
+    final PVector loc;    
     int rows;
     int columns;
 
@@ -99,11 +101,6 @@ public class MazeMaker { // create the maze
         println(solution.size());
         allSquares.get(rows-1).get(columns-1).removeSide(2);
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
-        // while(!solution.empty()){
-        //     solution.peek().isCorrect = true;
-        //     solution.pop();
-        //     // solution.pop().changeColor(color(255,0,0));
-        // }
     }
 
     public int[] checkNeighbor(MazeSquare square){
@@ -156,6 +153,10 @@ public class MazeMaker { // create the maze
     public void display(){
         drawBackground();
         drawGrid();
+    }
+
+    public PVector getLoc(){
+        return loc; 
     }
 }
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
@@ -242,6 +243,40 @@ public class MazeSquare {
 
     public boolean hasVisited(){
         return alreadyVisited;
+    }
+}
+public class Player {
+    PVector loc = new PVector(0,0);
+    PVector velocity = new PVector(0,0);
+    PVector mazeLoc;
+    float speed = 0.5f;
+    int size = 3;
+    public Player (PVector mazeLoc) {
+        this.mazeLoc = mazeLoc;
+    }
+
+    public void move(boolean[] input){
+        velocity.x = 0; // reset velocity before taking in inputs
+        velocity.y = 0;
+        if(input[0])
+            velocity.x = -speed;
+        else if(input[2])
+            velocity.x = speed;
+        if(input[1])
+            velocity.y = -speed;
+        else if(input[3])
+            velocity.y = speed;
+        loc.add(velocity);
+    }
+
+    public void display(){
+        pushMatrix();
+        translate(mazeLoc.x + size/2, mazeLoc.y + size/2);
+
+        ellipseMode(CENTER);
+        fill(0,255,0);
+        circle(loc.x, loc.y, size);
+        popMatrix();
     }
 }
   public void settings() {  size(1080, 720); }
