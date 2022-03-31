@@ -27,6 +27,10 @@ public class MazeSquare {
                 
     }
 
+    PVector info(){
+        return loc;
+    }
+    
     void removeSide(int side){
         // 0 - left; 1 - top; 2 - right; 3 - bottom
         isClosed[side] = false;

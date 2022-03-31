@@ -17,7 +17,7 @@ public class The_Maze_Runner extends PApplet {
 MazeMaker testMaze;
 public void setup() {
     
-    testMaze = new MazeMaker(width/2, height-125, 450, 250);
+    testMaze = new MazeMaker(width/2-225, height-260, 450, 250);
 }
 
 public void draw() {
@@ -26,26 +26,60 @@ public void draw() {
 }
 public class MazeMaker { // create the maze
     PVector size; 
-    PVector loc;
+    PVector loc;    
+    int rows;
+    int columns;
+
+    int squareSize = 10;
+    ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
+
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
         loc = new PVector(xPos, yPos);
         size = new PVector(mazeWidth, mazeHeight);
+        rows = PApplet.parseInt(mazeHeight/squareSize); // 10 = square's size
+        columns = PApplet.parseInt(mazeWidth/squareSize);
+        createGrid();
     }
 
-    public void grid(){
-
+    public void createGrid(){
+                
+        for(int y = 0; y < rows; y++){            
+            allSquares.add(new ArrayList<MazeSquare>());
+            for(int x = 0; x < columns; x++){    
+                allSquares.get(y).add(new MazeSquare(x*squareSize, y*squareSize, squareSize));
+                       
+            }
+        }
+       for(int y = 0; y < rows; y++){
+            for(int x = 0; x<columns; x++){
+                // allSquares.get(y).get(x).display();
+                println(allSquares.get(y).get(x).info().x + " " + allSquares.get(y).get(x).info().y);
+            }
+        } 
     }
 
-    public void gridBg(){
+    public void drawGrid(){
+        pushMatrix();
+        translate(loc.x, loc.y); // reset the grid to make it easer to draw the squares
+        for(int y = 0; y < rows; y++){
+            for(int x = 0; x<columns; x++){
+                allSquares.get(y).get(x).display();
+                // println(allSquares.get(y).get(x).info().x + " " + allSquares.get(y).get(x).info().y);
+            }
+        }
+        popMatrix();
+    }
+
+    public void drawBackground(){
         fill(0);
-        rectMode(CENTER);
+        rectMode(CORNER);
         noStroke();
         rect(loc.x, loc.y, size.x, size.y);        
     }
 
     public void display(){
-        gridBg();
-        grid();
+        drawBackground();
+        drawGrid();
     }
 }
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
@@ -64,7 +98,7 @@ public class MazeSquare {
     public void display(){
         stroke(255);
         pushMatrix();
-        translate(loc.x, loc.y);
+        translate(loc.x, loc.y); // move to desired location
         for(int x = 0; x < 4; x++){
             if(isClosed[x]){
                 if(x != 3)
@@ -77,6 +111,10 @@ public class MazeSquare {
                 
     }
 
+    public PVector info(){
+        return loc;
+    }
+    
     public void removeSide(int side){
         // 0 - left; 1 - top; 2 - right; 3 - bottom
         isClosed[side] = false;
