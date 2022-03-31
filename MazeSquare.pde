@@ -17,9 +17,16 @@ public class MazeSquare {
     }
 
     void display(){
-        stroke(wallColor);
         pushMatrix();
         translate(loc.x, loc.y); // move to desired location
+        if(isCorrect){
+            fill(255,0,0);
+            noStroke();
+            rectMode(CORNER);
+            rect(0, 0, size, size);
+        }
+
+        stroke(wallColor);
         for(int x = 0; x < 4; x++){
             if(isClosed[x]){
                 if(x != 3)
@@ -28,12 +35,6 @@ public class MazeSquare {
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
         }
-
-        // if(isCorrect){
-        //     fill(255,0,0);
-        // rectMode(CORNER);
-        // rect(loc.x, loc.y, loc.x+size, loc.y+size);
-        // }
         
         popMatrix();
         

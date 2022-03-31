@@ -43,7 +43,6 @@ public class MazeMaker { // create the maze
             if(reached) solution.add(currSquare);
             if(availableNeighbor.size() == 0) {
                 if(currSquare.getIdx()[0] == columns-1 && currSquare.getIdx()[1] == rows-1 || currSquare == lastRightSquare){
-                    // currSquare.removeSide(2);
                     
                     reached = true;
                 }
@@ -66,9 +65,11 @@ public class MazeMaker { // create the maze
         }
         println(solution.size());
         allSquares.get(rows-1).get(columns-1).removeSide(2);
+        allSquares.get(rows-1).get(columns-1).isCorrect = true;
         while(!solution.empty()){
-            // solution.pop().isCorrect = true;
-            solution.pop().changeColor(color(255,0,0));
+            solution.peek().isCorrect = true;
+            solution.pop();
+            // solution.pop().changeColor(color(255,0,0));
         }
     }
 

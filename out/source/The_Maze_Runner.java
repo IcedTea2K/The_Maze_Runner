@@ -72,7 +72,6 @@ public class MazeMaker { // create the maze
             if(reached) solution.add(currSquare);
             if(availableNeighbor.size() == 0) {
                 if(currSquare.getIdx()[0] == columns-1 && currSquare.getIdx()[1] == rows-1 || currSquare == lastRightSquare){
-                    // currSquare.removeSide(2);
                     
                     reached = true;
                 }
@@ -95,9 +94,11 @@ public class MazeMaker { // create the maze
         }
         println(solution.size());
         allSquares.get(rows-1).get(columns-1).removeSide(2);
+        allSquares.get(rows-1).get(columns-1).isCorrect = true;
         while(!solution.empty()){
-            // solution.pop().isCorrect = true;
-            solution.pop().changeColor(color(255,0,0));
+            solution.peek().isCorrect = true;
+            solution.pop();
+            // solution.pop().changeColor(color(255,0,0));
         }
     }
 
@@ -172,9 +173,16 @@ public class MazeSquare {
     }
 
     public void display(){
-        stroke(wallColor);
         pushMatrix();
         translate(loc.x, loc.y); // move to desired location
+        if(isCorrect){
+            fill(255,0,0);
+            noStroke();
+            rectMode(CORNER);
+            rect(0, 0, size, size);
+        }
+
+        stroke(wallColor);
         for(int x = 0; x < 4; x++){
             if(isClosed[x]){
                 if(x != 3)
@@ -183,12 +191,6 @@ public class MazeSquare {
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
         }
-
-        // if(isCorrect){
-        //     fill(255,0,0);
-        // rectMode(CORNER);
-        // rect(loc.x, loc.y, loc.x+size, loc.y+size);
-        // }
         
         popMatrix();
         
