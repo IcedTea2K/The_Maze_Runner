@@ -9,6 +9,7 @@ public class MazeSquare {
 
     float size;
     boolean alreadyVisited = false;
+    boolean isCorrect = false;
     public MazeSquare (float xPos, float yPos, float size, int[] idx) {
         loc = new PVector(xPos, yPos);
         this.size = size;
@@ -27,8 +28,15 @@ public class MazeSquare {
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
         }
+
+        // if(isCorrect){
+        //     fill(255,0,0);
+        // rectMode(CORNER);
+        // rect(loc.x, loc.y, loc.x+size, loc.y+size);
+        // }
+        
         popMatrix();
-                
+        
     }
 
     void changeColor(color wallColor){
