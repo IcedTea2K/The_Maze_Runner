@@ -184,6 +184,10 @@ public class MazeMaker { // create the maze
     }
 
     public MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square
+        if(rowIdx <= -1)
+            return allSquares.get(rows-1).get(columns-1);
+        else if(rowIdx >= rows)
+            return allSquares.get(0).get(0); 
         return allSquares.get(rowIdx).get(colIdx);
     }
 
@@ -238,7 +242,7 @@ public class MazeSquare {
     }
 
     public PVector getLocation(){
-        return loc;
+        return loc.copy();
     }
 
     public float[] getBoundary(){
@@ -249,17 +253,12 @@ public class MazeSquare {
                 }else{
                     boundary[x] = loc.x + verticies[x].x*size;
                 }
-            // if(isClosed[x]){
-                                
-            // }else{
-            //     boundary[x] = -1;
-            // }
         }
         return boundary;
     }
 
     public int[] getIdx(){
-        return idx;
+        return idx.clone();
     }
     
     public void removeSide(MazeSquare neighbor){
@@ -316,8 +315,9 @@ public class Player {
         velocity.x = 0; // reset velocity before taking in inputs
         velocity.y = 0;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
+
         float[] boundary = currSquare.getBoundary();
-        println(boundary);
+        
         if(input[0]){
             velocity.x = -speed;
             if(loc.x + velocity.x < boundary[3] + size/2){
@@ -359,6 +359,17 @@ public class Player {
 
         ellipseMode(CENTER);
         fill(0,255,0);
+        if(currSquareIdx[1] < 0){
+            loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
+            loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
+
+            currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
+        }else if(currSquareIdx[1] >= maze.allSquares.size()){
+            loc.y = maze.getSquare(0,0).getLocation().y;
+            loc.x -= currSquare.getLocation().x;
+
+            currSquareIdx = maze.getSquare(0,0).getIdx();
+        }
         circle(loc.x, loc.y, size);
         popMatrix();
     }

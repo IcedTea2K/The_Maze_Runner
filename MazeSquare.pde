@@ -45,7 +45,7 @@ public class MazeSquare {
     }
 
     PVector getLocation(){
-        return loc;
+        return loc.copy();
     }
 
     float[] getBoundary(){
@@ -61,7 +61,7 @@ public class MazeSquare {
     }
 
     int[] getIdx(){
-        return idx;
+        return idx.clone();
     }
     
     void removeSide(MazeSquare neighbor){

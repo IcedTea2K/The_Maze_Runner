@@ -125,6 +125,10 @@ public class MazeMaker { // create the maze
     }
 
     MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square
+        if(rowIdx <= -1)
+            return allSquares.get(rows-1).get(columns-1);
+        else if(rowIdx >= rows)
+            return allSquares.get(0).get(0); 
         return allSquares.get(rowIdx).get(colIdx);
     }
 

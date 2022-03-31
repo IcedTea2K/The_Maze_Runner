@@ -20,8 +20,9 @@ public class Player {
         velocity.x = 0; // reset velocity before taking in inputs
         velocity.y = 0;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
+
         float[] boundary = currSquare.getBoundary();
-        println(boundary);
+        
         if(input[0]){
             velocity.x = -speed;
             if(loc.x + velocity.x < boundary[3] + size/2){
@@ -63,6 +64,17 @@ public class Player {
 
         ellipseMode(CENTER);
         fill(0,255,0);
+        if(currSquareIdx[1] < 0){
+            loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
+            loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
+
+            currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
+        }else if(currSquareIdx[1] >= maze.allSquares.size()){
+            loc.y = maze.getSquare(0,0).getLocation().y;
+            loc.x -= currSquare.getLocation().x;
+
+            currSquareIdx = maze.getSquare(0,0).getIdx();
+        }
         circle(loc.x, loc.y, size);
         popMatrix();
     }
