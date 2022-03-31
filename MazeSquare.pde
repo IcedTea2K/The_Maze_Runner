@@ -48,6 +48,18 @@ public class MazeSquare {
         return loc;
     }
 
+    float[] getBoundary(){
+        float[] boundary = new float[4];
+        for(int x = 0; x < 4; x++){
+            if(x%2 == 0){ // top and bottom
+                    boundary[x] = loc.y + verticies[x].y*size;
+                }else{
+                    boundary[x] = loc.x + verticies[x].x*size;
+                }
+        }
+        return boundary;
+    }
+
     int[] getIdx(){
         return idx;
     }
