@@ -1,5 +1,4 @@
 import java.util.*;
-
 MazeMaker mainMaze;
 void setup() {
     size(1080, 720);

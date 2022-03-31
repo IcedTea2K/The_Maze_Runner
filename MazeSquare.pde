@@ -2,18 +2,21 @@ PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
 
 public class MazeSquare {
-    PVector loc;
+    final PVector loc; // prevent these from being changed later on
+    final int[] idx;
     boolean[] isClosed = {true, true, true, true};
+    color wallColor = color(255);
 
     float size;
     boolean alreadyVisited = false;
-    public MazeSquare (float xPos, float yPos, float size) {
+    public MazeSquare (float xPos, float yPos, float size, int[] idx) {
         loc = new PVector(xPos, yPos);
         this.size = size;
+        this.idx = idx;
     }
 
     void display(){
-        stroke(255);
+        stroke(wallColor);
         pushMatrix();
         translate(loc.x, loc.y); // move to desired location
         for(int x = 0; x < 4; x++){
@@ -28,12 +31,30 @@ public class MazeSquare {
                 
     }
 
-    PVector info(){
+    PVector getLocation(){
         return loc;
     }
+
+    int[] getIdx(){
+        return idx;
+    }
     
-    void removeSide(int side){
+    void removeSide(MazeSquare neighbor){
         // 0 - left; 1 - top; 2 - right; 3 - bottom
+        int tempColumnIdxDiff = neighbor.getIdx()[0] - idx[0]; 
+        int tempRowIdxDiff = neighbor.getIdx()[1] - idx[1];
+
+        if(tempColumnIdxDiff < 0)
+            isClosed[3] = false;
+        else if(tempRowIdxDiff < 0)
+            isClosed[0] = false;
+        else if(tempColumnIdxDiff > 0)
+            isClosed[1] = false;
+        else if(tempRowIdxDiff > 0)
+            isClosed[2] = false;
+    }
+
+    void removeSide(int side){
         isClosed[side] = false;
     }
 
