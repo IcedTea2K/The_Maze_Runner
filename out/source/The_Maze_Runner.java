@@ -17,7 +17,7 @@ public class The_Maze_Runner extends PApplet {
 MazeMaker testMaze;
 public void setup() {
     
-    testMaze = new MazeMaker(width/2-225, height-260, 450, 250);
+    testMaze = new MazeMaker(width/2-225, height-250, 450, 240);
 }
 
 public void draw() {
@@ -30,7 +30,7 @@ public class MazeMaker { // create the maze
     int rows;
     int columns;
 
-    int squareSize = 10;
+    int squareSize = 15;
     ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
 
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
@@ -52,7 +52,6 @@ public class MazeMaker { // create the maze
         }
        for(int y = 0; y < rows; y++){
             for(int x = 0; x<columns; x++){
-                // allSquares.get(y).get(x).display();
                 println(allSquares.get(y).get(x).info().x + " " + allSquares.get(y).get(x).info().y);
             }
         } 

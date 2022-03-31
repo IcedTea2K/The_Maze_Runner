@@ -1,7 +1,7 @@
 MazeMaker testMaze;
 void setup() {
     size(1080, 720);
-    testMaze = new MazeMaker(width/2-225, height-260, 450, 250);
+    testMaze = new MazeMaker(width/2-225, height-250, 450, 240);
 }
 
 void draw() {

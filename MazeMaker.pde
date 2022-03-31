@@ -4,7 +4,7 @@ public class MazeMaker { // create the maze
     int rows;
     int columns;
 
-    int squareSize = 10;
+    int squareSize = 15;
     ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
 
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
