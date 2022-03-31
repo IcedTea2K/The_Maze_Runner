@@ -14,7 +14,7 @@ public class MazeSquare {
     void display(){
         stroke(255);
         pushMatrix();
-        translate(loc.x, loc.y);
+        translate(loc.x, loc.y); // move to desired location
         for(int x = 0; x < 4; x++){
             if(isClosed[x]){
                 if(x != 3)
