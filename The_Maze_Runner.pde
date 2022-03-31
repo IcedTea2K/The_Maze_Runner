@@ -1,10 +1,10 @@
-MazeSquare test;
+MazeMaker testMaze;
 void setup() {
     size(1080, 720);
-    test = new MazeSquare(width/2,height/2,30);
+    testMaze = new MazeMaker(width/2, height-125, 450, 250);
 }
 
 void draw() {
     background(100);    
-    test.display();
+    testMaze.display();
 }

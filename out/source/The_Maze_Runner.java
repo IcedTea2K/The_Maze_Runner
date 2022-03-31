@@ -14,25 +14,39 @@ import java.io.IOException;
 
 public class The_Maze_Runner extends PApplet {
 
-MazeSquare test;
+MazeMaker testMaze;
 public void setup() {
     
-    test = new MazeSquare(width/2,height/2,30);
+    testMaze = new MazeMaker(width/2, height-125, 450, 250);
 }
 
 public void draw() {
     background(100);    
-    test.display();
-    if(frameCount%60 == 0) test.removeSide(0);
-    else if(frameCount%90 == 0) test.addSide(0);
+    testMaze.display();
 }
 public class MazeMaker { // create the maze
     PVector size; 
-    public MazeMaker (float mazeWidth, float mazeHeight) {
-        size.x = mazeWidth;
-        size.y = mazeHeight;
+    PVector loc;
+    public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
+        loc = new PVector(xPos, yPos);
+        size = new PVector(mazeWidth, mazeHeight);
     }
 
+    public void grid(){
+
+    }
+
+    public void gridBg(){
+        fill(0);
+        rectMode(CENTER);
+        noStroke();
+        rect(loc.x, loc.y, size.x, size.y);        
+    }
+
+    public void display(){
+        gridBg();
+        grid();
+    }
 }
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
