@@ -35,6 +35,7 @@ public class MazeMaker { // create the maze
 
     int squareSize = 15;
     ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
+    Stack<MazeSquare> solution = new Stack<MazeSquare>();
     Stack<MazeSquare> visitedSquareStack = new Stack<MazeSquare>();
 
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
@@ -52,6 +53,7 @@ public class MazeMaker { // create the maze
         allSquares.get(0).get(0).removeSide(0);
 
         ArrayList<MazeSquare> availableNeighbor = new ArrayList<MazeSquare>();
+        MazeSquare lastRightSquare = allSquares.get(0).get(0);
         boolean reached = false;
         while(!visitedSquareStack.empty()){
             MazeSquare currSquare = visitedSquareStack.pop();
@@ -66,8 +68,19 @@ public class MazeMaker { // create the maze
                 else if(x%2 != 0 && !allSquares.get(neighborIdx[x]).get(currSquare.getIdx()[0]).hasVisited())   
                     availableNeighbor.add(allSquares.get(neighborIdx[x]).get(currSquare.getIdx()[0]));
             }
-            
-            if(availableNeighbor.size() == 0) continue;
+
+            if(availableNeighbor.size() == 0) {
+                if(currSquare.getIdx()[0] == columns-1 && currSquare.getIdx()[1] == rows-1 || currSquare == lastRightSquare){
+                    // currSquare.removeSide(2);
+                    solution.add(currSquare);
+                    reached = true;
+                }
+                continue;
+            }else if(availableNeighbor.size() != 0 && reached){
+                lastRightSquare = currSquare;
+                reached = false;
+            }
+
             visitedSquareStack.push(currSquare);
 
             int tempRandomNeighborIdx = PApplet.parseInt(round(random(0, availableNeighbor.size()-1)));
@@ -79,7 +92,11 @@ public class MazeMaker { // create the maze
             visitedSquareStack.push(availableNeighbor.get(tempRandomNeighborIdx));      
             availableNeighbor.clear(); // reset
         }
+        println(solution.size());
         allSquares.get(rows-1).get(columns-1).removeSide(2);
+        while(!solution.empty()){
+            solution.pop().changeColor(color(255,0,0));
+        }
     }
 
     public int[] checkNeighbor(MazeSquare square){
@@ -165,6 +182,10 @@ public class MazeSquare {
         }
         popMatrix();
                 
+    }
+
+    public void changeColor(int wallColor){
+        this.wallColor = wallColor;
     }
 
     public PVector getLocation(){

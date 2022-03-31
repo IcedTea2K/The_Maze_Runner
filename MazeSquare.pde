@@ -31,6 +31,10 @@ public class MazeSquare {
                 
     }
 
+    void changeColor(color wallColor){
+        this.wallColor = wallColor;
+    }
+
     PVector getLocation(){
         return loc;
     }
