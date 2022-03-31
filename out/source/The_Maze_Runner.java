@@ -35,7 +35,7 @@ public class MazeMaker { // create the maze
 
     int squareSize = 15;
     ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
-    Stack<MazeSquare> solution = new Stack<MazeSquare>();
+    ArrayList<MazeSquare> solution = new ArrayList<MazeSquare>();
     Stack<MazeSquare> visitedSquareStack = new Stack<MazeSquare>();
 
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
@@ -69,7 +69,11 @@ public class MazeMaker { // create the maze
                     availableNeighbor.add(allSquares.get(neighborIdx[x]).get(currSquare.getIdx()[0]));
             }
 
-            if(reached) solution.add(currSquare);
+            if(reached) {
+                currSquare.isCorrect = true;
+                solution.add(currSquare);
+            }
+            
             if(availableNeighbor.size() == 0) {
                 if(currSquare.getIdx()[0] == columns-1 && currSquare.getIdx()[1] == rows-1 || currSquare == lastRightSquare){
                     
@@ -95,11 +99,11 @@ public class MazeMaker { // create the maze
         println(solution.size());
         allSquares.get(rows-1).get(columns-1).removeSide(2);
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
-        while(!solution.empty()){
-            solution.peek().isCorrect = true;
-            solution.pop();
-            // solution.pop().changeColor(color(255,0,0));
-        }
+        // while(!solution.empty()){
+        //     solution.peek().isCorrect = true;
+        //     solution.pop();
+        //     // solution.pop().changeColor(color(255,0,0));
+        // }
     }
 
     public int[] checkNeighbor(MazeSquare square){
