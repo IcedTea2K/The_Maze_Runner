@@ -3,9 +3,11 @@ public class Player {
     PVector velocity = new PVector(0,0);
     PVector mazeLoc;
     float speed = 0.5;
-    int size = 3;
-    public Player (PVector mazeLoc) {
+    int size = 7;
+    public Player (PVector mazeLoc, MazeSquare firstSquare) {
         this.mazeLoc = mazeLoc;
+        loc.x = firstSquare.getLocation().x + firstSquare.size/2;
+        loc.y = firstSquare.getLocation().y + firstSquare.size/2;
     }
 
     void move(boolean[] input){
@@ -24,11 +26,16 @@ public class Player {
 
     void display(){
         pushMatrix();
-        translate(mazeLoc.x + size/2, mazeLoc.y + size/2);
+        translate(mazeLoc.x, mazeLoc.y);
 
         ellipseMode(CENTER);
         fill(0,255,0);
         circle(loc.x, loc.y, size);
         popMatrix();
+    }
+
+    void action(boolean[] input){
+        move(input);
+        display();
     }
 }

@@ -124,6 +124,10 @@ public class MazeMaker { // create the maze
         drawGrid();
     }
 
+    MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square
+        return allSquares.get(rowIdx).get(colIdx);
+    }
+
     PVector getLoc(){
         return loc; 
     }

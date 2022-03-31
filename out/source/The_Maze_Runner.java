@@ -19,15 +19,43 @@ public class The_Maze_Runner extends PApplet {
 
 MazeMaker mainMaze;
 Player mainPlayer;
+boolean[] direction = new boolean[4];
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
-    mainPlayer = new Player(mainMaze.getLoc());
+    mainPlayer = new Player(mainMaze.getLoc(), mainMaze.getSquare(0,0));
 }
 
 public void draw() {
     background(100);    
     mainMaze.display();
+    mainPlayer.action(direction);
+}
+
+public void setDirection (int k, boolean isOn) { // record pressed keys (direction)
+  switch(k) {
+  case LEFT:
+    direction[0] = isOn;    
+    break;
+  case UP:
+    direction[1] = isOn;
+    break;
+  case RIGHT:
+    direction[2] = isOn;
+    break;
+  case DOWN:
+    direction[3] = isOn;
+    break;
+  }
+}
+
+
+public void keyPressed() {
+  if (key == CODED) setDirection(keyCode, true);
+}
+
+public void keyReleased() {
+  if(key==CODED) setDirection(keyCode, false);
 }
 public class MazeMaker { // create the maze
     PVector size; 
@@ -155,6 +183,10 @@ public class MazeMaker { // create the maze
         drawGrid();
     }
 
+    public MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square
+        return allSquares.get(rowIdx).get(colIdx);
+    }
+
     public PVector getLoc(){
         return loc; 
     }
@@ -250,9 +282,11 @@ public class Player {
     PVector velocity = new PVector(0,0);
     PVector mazeLoc;
     float speed = 0.5f;
-    int size = 3;
-    public Player (PVector mazeLoc) {
+    int size = 7;
+    public Player (PVector mazeLoc, MazeSquare firstSquare) {
         this.mazeLoc = mazeLoc;
+        loc.x = firstSquare.getLocation().x + firstSquare.size/2;
+        loc.y = firstSquare.getLocation().y + firstSquare.size/2;
     }
 
     public void move(boolean[] input){
@@ -271,12 +305,17 @@ public class Player {
 
     public void display(){
         pushMatrix();
-        translate(mazeLoc.x + size/2, mazeLoc.y + size/2);
+        translate(mazeLoc.x, mazeLoc.y);
 
         ellipseMode(CENTER);
         fill(0,255,0);
         circle(loc.x, loc.y, size);
         popMatrix();
+    }
+
+    public void action(boolean[] input){
+        move(input);
+        display();
     }
 }
   public void settings() {  size(1080, 720); }
