@@ -3,6 +3,8 @@ import processing.data.*;
 import processing.event.*; 
 import processing.opengl.*; 
 
+import java.util.*; 
+
 import java.util.HashMap; 
 import java.util.ArrayList; 
 import java.io.File; 
@@ -14,15 +16,17 @@ import java.io.IOException;
 
 public class The_Maze_Runner extends PApplet {
 
-MazeMaker testMaze;
+
+
+MazeMaker mainMaze;
 public void setup() {
     
-    testMaze = new MazeMaker(width/2-225, height-250, 450, 240);
+    mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
 }
 
 public void draw() {
     background(100);    
-    testMaze.display();
+    mainMaze.display();
 }
 public class MazeMaker { // create the maze
     PVector size; 
@@ -32,6 +36,7 @@ public class MazeMaker { // create the maze
 
     int squareSize = 15;
     ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
+    
 
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
         loc = new PVector(xPos, yPos);
