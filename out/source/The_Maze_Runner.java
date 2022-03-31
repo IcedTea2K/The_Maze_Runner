@@ -89,6 +89,7 @@ public class MazeSquare {
     boolean[] isClosed = {true, true, true, true};
 
     float size;
+    boolean alreadyVisited = false;
     public MazeSquare (float xPos, float yPos, float size) {
         loc = new PVector(xPos, yPos);
         this.size = size;
@@ -122,6 +123,14 @@ public class MazeSquare {
     public void addSide(int side){
         // 0 - left; 1 - top; 2 - right; 3 - bottom        
         isClosed[side] = true;
+    }
+
+    public void visit(){
+        alreadyVisited = true;
+    }
+
+    public boolean hasVisited(){
+        return alreadyVisited;
     }
 }
   public void settings() {  size(1080, 720); }
