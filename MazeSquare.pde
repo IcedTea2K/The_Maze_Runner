@@ -13,6 +13,8 @@ public class MazeSquare {
 
     void display(){
         stroke(255);
+        pushMatrix();
+        translate(loc.x, loc.y);
         for(int x = 0; x < 4; x++){
             if(isClosed[x]){
                 if(x != 3)
@@ -20,10 +22,18 @@ public class MazeSquare {
                 else
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
-        }        
+        }
+        popMatrix();
+                
     }
 
-    void removeSides(int side){
+    void removeSide(int side){
         // 0 - left; 1 - top; 2 - right; 3 - bottom
+        isClosed[side] = false;
+    }
+
+    void addSide(int side){
+        // 0 - left; 1 - top; 2 - right; 3 - bottom        
+        isClosed[side] = true;
     }
 }

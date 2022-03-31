@@ -14,14 +14,17 @@ import java.io.IOException;
 
 public class The_Maze_Runner extends PApplet {
 
-MazeSquare test = new MazeSquare(0,0,30);
+MazeSquare test;
 public void setup() {
     
+    test = new MazeSquare(width/2,height/2,30);
 }
 
 public void draw() {
     background(100);    
     test.display();
+    if(frameCount%60 == 0) test.removeSide(0);
+    else if(frameCount%90 == 0) test.addSide(0);
 }
 public class MazeMaker { // create the maze
     PVector size; 
@@ -46,6 +49,8 @@ public class MazeSquare {
 
     public void display(){
         stroke(255);
+        pushMatrix();
+        translate(loc.x, loc.y);
         for(int x = 0; x < 4; x++){
             if(isClosed[x]){
                 if(x != 3)
@@ -53,11 +58,19 @@ public class MazeSquare {
                 else
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
-        }        
+        }
+        popMatrix();
+                
     }
 
-    public void removeSides(int side){
+    public void removeSide(int side){
         // 0 - left; 1 - top; 2 - right; 3 - bottom
+        isClosed[side] = false;
+    }
+
+    public void addSide(int side){
+        // 0 - left; 1 - top; 2 - right; 3 - bottom        
+        isClosed[side] = true;
     }
 }
   public void settings() {  size(1080, 720); }

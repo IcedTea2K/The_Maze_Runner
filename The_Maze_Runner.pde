@@ -1,6 +1,7 @@
-MazeSquare test = new MazeSquare(0,0,30);
+MazeSquare test;
 void setup() {
     size(1080, 720);
+    test = new MazeSquare(width/2,height/2,30);
 }
 
 void draw() {
