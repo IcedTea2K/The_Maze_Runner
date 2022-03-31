@@ -6,8 +6,8 @@ public class Player {
     int[] currSquareIdx;
     MazeMaker maze;
 
-    float speed = 0.5;
-    int size = 7;
+    float speed = 1;
+    int size = 6;
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
         currSquare = firstSquare;
@@ -63,6 +63,7 @@ public class Player {
         translate(maze.getLoc().x, maze.getLoc().y);
 
         ellipseMode(CENTER);
+        noStroke();
         fill(0,255,0);
         if(currSquareIdx[1] < 0){
             loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
