@@ -30,48 +30,13 @@ public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
-
-    outerBoundary[0] = new PVector(0,0);
-    outerBoundary[1] = new PVector(width,0);
-    outerBoundary[2] = new PVector(width,height);
-    outerBoundary[3] = new PVector(0,height); 
-
-    for(int x = 0; x < 10; x++){
-        boundary[x][0] = new PVector(random(0, width), random(0, height));
-        boundary[x][1] = new PVector(random(0, width), random(0, height));
-    }    
+    
 }
 
 public void draw() {
     background(100);    
     mainMaze.display();
     mainPlayer.action(direction);
-
-    allRays.clear();
-    for(float theta = 0; theta <= 360; theta += 0.5f){
-        Ray temp = new Ray(new PVector(mouseX, mouseY), theta);
-        for(int x = 0; x < boundary.length; x++){
-            temp.intersect(boundary[x][0], boundary[x][1]);
-        }
-        if(temp.intersection == null){
-            for(int i = 0; i < 3; i++){
-                temp.intersect(outerBoundary[i], outerBoundary[i+1]);
-                if(i == 2)
-                   temp.intersect(outerBoundary[0], outerBoundary[i+1]); 
-                
-            }
-            
-        } 
-        if(temp.intersection != null) allRays.add(temp);
-    }
-
-    stroke(255);
-    for(int x = 0; x < boundary.length; x++){
-        line(boundary[x][0].x, boundary[x][0].y, boundary[x][1].x, boundary[x][1].y);
-    }
-    for(Ray a: allRays){
-        a.connectIntersect();
-    }
 }
 
 public void setDirection (int k, boolean isOn) { // record pressed keys (direction)
@@ -299,6 +264,19 @@ public class MazeSquare {
         return boundary;
     }
 
+    public PVector[] getBoundaryVerticies(){ 
+       PVector[] boundary = new PVector[4];
+       
+       boundary[0] = new PVector(loc.x,loc.y);
+       boundary[1] = new PVector(width,0);
+       boundary[2] = new PVector(width,height);
+       boundary[3] = new PVector(0,height);
+       for(int x = 0; x < 4; x++){
+           boundary[x] = new PVector(loc.x + verticies[x].x*size, loc.y + verticies[x].y*size);
+        }
+        return boundary;
+    }
+
     public int[] getIdx(){
         return idx.clone();
     }
@@ -345,6 +323,7 @@ public class Player {
     int[] currSquareIdx;
     MazeMaker maze;
 
+    ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
         currSquare = firstSquare;
@@ -395,6 +374,25 @@ public class Player {
         loc.add(velocity);
     }
 
+    public void detectWalls(MazeSquare targetSquare){
+        playerVisibility.clear();
+        PVector[] squareBoundary = targetSquare.getBoundaryVerticies();
+
+        for(float theta = 0; theta <= 360; theta += 0.5f){
+            Ray temp = new Ray(this.loc.copy(), theta);
+            for(int x = 0; x<3; x++){
+                if(temp.intersect(squareBoundary[x], squareBoundary[x+1]))
+                    break;
+                else if(x == 2)
+                    temp.intersect(squareBoundary[0], squareBoundary[x+1]);
+            }    
+            if(temp.intersection != null) playerVisibility.add(temp);
+        }
+        println("playerVisibility.size(): "+playerVisibility.size());   
+        for(Ray r: playerVisibility)
+            r.connectIntersect();
+    }
+
     public void display(){
         pushMatrix();
         translate(maze.getLoc().x, maze.getLoc().y);
@@ -413,6 +411,7 @@ public class Player {
 
             currSquareIdx = maze.getSquare(0,0).getIdx();
         }
+        detectWalls(currSquare);
         circle(loc.x, loc.y, size);
         popMatrix();
     }
@@ -471,7 +470,8 @@ public class Ray{
         return false;
     }
 
-    public void connectIntersect(){        
+    public void connectIntersect(){
+        stroke(255);  
         line(pos.x, pos.y, intersection.x , intersection.y);
     }
 }

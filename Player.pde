@@ -8,6 +8,7 @@ public class Player {
     int[] currSquareIdx;
     MazeMaker maze;
 
+    ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
         currSquare = firstSquare;
@@ -58,6 +59,25 @@ public class Player {
         loc.add(velocity);
     }
 
+    void detectWalls(MazeSquare targetSquare){
+        playerVisibility.clear();
+        PVector[] squareBoundary = targetSquare.getBoundaryVerticies();
+
+        for(float theta = 0; theta <= 360; theta += 0.5){
+            Ray temp = new Ray(this.loc.copy(), theta);
+            for(int x = 0; x<3; x++){
+                if(temp.intersect(squareBoundary[x], squareBoundary[x+1]))
+                    break;
+                else if(x == 2)
+                    temp.intersect(squareBoundary[0], squareBoundary[x+1]);
+            }    
+            if(temp.intersection != null) playerVisibility.add(temp);
+        }
+        println("playerVisibility.size(): "+playerVisibility.size());   
+        for(Ray r: playerVisibility)
+            r.connectIntersect();
+    }
+
     void display(){
         pushMatrix();
         translate(maze.getLoc().x, maze.getLoc().y);
@@ -76,6 +96,7 @@ public class Player {
 
             currSquareIdx = maze.getSquare(0,0).getIdx();
         }
+        detectWalls(currSquare);
         circle(loc.x, loc.y, size);
         popMatrix();
     }

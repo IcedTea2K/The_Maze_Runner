@@ -47,7 +47,8 @@ public class Ray{
         return false;
     }
 
-    void connectIntersect(){        
+    void connectIntersect(){
+        stroke(255);  
         line(pos.x, pos.y, intersection.x , intersection.y);
     }
 }

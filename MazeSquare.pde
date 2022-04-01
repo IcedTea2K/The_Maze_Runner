@@ -60,6 +60,19 @@ public class MazeSquare {
         return boundary;
     }
 
+    PVector[] getBoundaryVerticies(){ 
+       PVector[] boundary = new PVector[4];
+       
+       boundary[0] = new PVector(loc.x,loc.y);
+       boundary[1] = new PVector(width,0);
+       boundary[2] = new PVector(width,height);
+       boundary[3] = new PVector(0,height);
+       for(int x = 0; x < 4; x++){
+           boundary[x] = new PVector(loc.x + verticies[x].x*size, loc.y + verticies[x].y*size);
+        }
+        return boundary;
+    }
+
     int[] getIdx(){
         return idx.clone();
     }
