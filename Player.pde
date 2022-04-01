@@ -63,8 +63,8 @@ public class Player {
         playerVisibility.clear();
         PVector[] squareBoundary = targetSquare.getBoundaryVerticies(); // will be used to detect the walls
 
-        for(float theta = 0; theta <= 360; theta += 0.5){
-            Ray temp = new Ray(this.loc.copy(), theta); // a temporary ray --> check which one touch the walls
+        for(float theta = 0; theta <= 360; theta += 0.5){ 
+            Ray temp = new Ray(this.loc.copy(), theta); // a temporary ray 
             for(int x = 0; x<3; x++){
                 if(temp.intersect(squareBoundary[x], squareBoundary[x+1]))
                     break;
