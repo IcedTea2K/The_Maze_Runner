@@ -19,17 +19,24 @@ public class The_Maze_Runner extends PApplet {
 
 MazeMaker mainMaze;
 Player mainPlayer;
+Ray test;
+
 boolean[] direction = new boolean[4];
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
+    test = new Ray(new PVector(width/2, height/2), 0);
 }
 
 public void draw() {
     background(100);    
     mainMaze.display();
     mainPlayer.action(direction);
+
+    test.setDirection(new PVector(mouseX, mouseY));
+    println(test.intersect(new PVector(100, -150), new PVector(100, 150)));
+    test.display();
 }
 
 public void setDirection (int k, boolean isOn) { // record pressed keys (direction)
@@ -303,7 +310,6 @@ public class Player {
     int[] currSquareIdx;
     MazeMaker maze;
 
-    ArrayList<Ray> allRays = new ArrayList<Ray>();    
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
         currSquare = firstSquare;
@@ -352,17 +358,6 @@ public class Player {
             }
         }
         loc.add(velocity);
-        checkVisibility();
-    }
-
-    public void checkVisibility(){
-        allRays.clear();
-        for(int angle = 0; angle <= 360; angle+=5){
-            allRays.add(new Ray(loc.copy(), angle));
-        }
-        for(int x = 0; x < allRays.size(); x++){
-            allRays.get(x).display();
-        }
     }
 
     public void display(){
@@ -405,12 +400,57 @@ public class Ray{
         
     // }
 
+    public void setDirection(PVector dirPos){
+        direction = dirPos.copy().sub(pos);
+        direction.normalize();
+    }
+
     public void display(){
         pushMatrix();
-        translate(mainMaze.getLoc().x, mainMaze.getLoc().y);
-        line(pos.x, pos.y, direction.x*20, direction.y*20);
+        fill(255);
+        ellipseMode(CENTER);
+        circle(pos.x, pos.y, 15);
+
+        stroke(255);
+        translate(pos.x, pos.y);
+        line(0,0, direction.x*20, direction.y*20);
         popMatrix();
         
+    }
+
+    public boolean intersect(PVector start, PVector end){
+        // L1 = boundary; L2 = ray
+        // L1: (x1, y1) = start; (x2, y2) = end
+        // L2: (x3, y3) = pos; (x4, y4) = pos + direction
+        // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+        stroke(255);
+        pushMatrix();
+        translate(pos.x, pos.y);
+        line(start.x, start.y, end.x, end.y);
+        popMatrix();
+        
+        start.add(pos);
+        end.add(pos);
+
+        float x1 = start.x; // boundary
+        float y1 = start.y;
+        float x2 = end.x;
+        float y2 = end.x;
+
+        float x3 = pos.x; // ray
+        float y3 = pos.y;
+        float x4 = direction.x + pos.x;
+        float y4 = direction.y + pos.y;
+
+        float denominator = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+        float t = ((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/denominator;
+        float u = ((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/denominator; 
+    
+        if((0 < t && t < 1) && u > 0){
+            println("t: "+t + " u: " + u);
+            return true;
+        }
+        return false;
     }
 }
   public void settings() {  size(1080, 720); }

@@ -1,17 +1,24 @@
 import java.util.*;
 MazeMaker mainMaze;
 Player mainPlayer;
+Ray test;
+
 boolean[] direction = new boolean[4];
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
+    test = new Ray(new PVector(width/2, height/2), 0);
 }
 
 void draw() {
     background(100);    
     mainMaze.display();
     mainPlayer.action(direction);
+
+    test.setDirection(new PVector(mouseX, mouseY));
+    println(test.intersect(new PVector(100, -150), new PVector(100, 150)));
+    test.display();
 }
 
 void setDirection (int k, boolean isOn) { // record pressed keys (direction)
