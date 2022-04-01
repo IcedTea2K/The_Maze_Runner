@@ -40,13 +40,13 @@ public class Ray{
         line(start.x, start.y, end.x, end.y);
         popMatrix();
         
-        start.add(pos);
+        start.add(pos); // accomodate the translation
         end.add(pos);
 
         float x1 = start.x; // boundary
         float y1 = start.y;
         float x2 = end.x;
-        float y2 = end.x;
+        float y2 = end.y;
 
         float x3 = pos.x; // ray
         float y3 = pos.y;
@@ -56,9 +56,13 @@ public class Ray{
         float denominator = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
         float t = ((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/denominator;
         float u = ((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/denominator; 
-    
+
         if((0 < t && t < 1) && u > 0){
             println("t: "+t + " u: " + u);
+            PVector intersection = new PVector(
+                (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
+            );
+            line(pos.x, pos.y, intersection.x , intersection.y);
             return true;
         }
         return false;

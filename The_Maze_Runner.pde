@@ -17,7 +17,7 @@ void draw() {
     mainPlayer.action(direction);
 
     test.setDirection(new PVector(mouseX, mouseY));
-    println(test.intersect(new PVector(100, -150), new PVector(100, 150)));
+    println(test.intersect(new PVector(100, -100), new PVector(100, 100)));
     test.display();
 }
 
