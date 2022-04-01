@@ -1,13 +1,13 @@
 public class Player {
     PVector loc = new PVector(0,0);
     PVector velocity = new PVector(0,0);
-    
+    float speed = 1;
+    int size = 6;
+
     MazeSquare currSquare;
     int[] currSquareIdx;
     MazeMaker maze;
 
-    float speed = 1;
-    int size = 6;
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
         currSquare = firstSquare;

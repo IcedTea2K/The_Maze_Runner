@@ -296,13 +296,14 @@ public class MazeSquare {
 public class Player {
     PVector loc = new PVector(0,0);
     PVector velocity = new PVector(0,0);
-    
+    float speed = 1;
+    int size = 6;
+
     MazeSquare currSquare;
     int[] currSquareIdx;
     MazeMaker maze;
 
-    float speed = 1;
-    int size = 6;
+    ArrayList<Ray> allRays = new ArrayList<Ray>();    
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
         currSquare = firstSquare;
@@ -351,6 +352,17 @@ public class Player {
             }
         }
         loc.add(velocity);
+        checkVisibility();
+    }
+
+    public void checkVisibility(){
+        allRays.clear();
+        for(int angle = 0; angle <= 360; angle+=5){
+            allRays.add(new Ray(loc.copy(), angle));
+        }
+        for(int x = 0; x < allRays.size(); x++){
+            allRays.get(x).display();
+        }
     }
 
     public void display(){
@@ -378,6 +390,27 @@ public class Player {
     public void action(boolean[] input){
         move(input);
         display();
+    }
+}
+public class Ray{
+    PVector pos;
+    PVector direction = new PVector(0,0);
+    public Ray (PVector pos, float angle) {
+        this.pos = pos;
+        direction.x = cos(radians(angle));
+        direction.y = sin(radians(angle));
+    }
+
+    // PVector intersection(PVector target){
+        
+    // }
+
+    public void display(){
+        pushMatrix();
+        translate(mainMaze.getLoc().x, mainMaze.getLoc().y);
+        line(pos.x, pos.y, direction.x*20, direction.y*20);
+        popMatrix();
+        
     }
 }
   public void settings() {  size(1080, 720); }
