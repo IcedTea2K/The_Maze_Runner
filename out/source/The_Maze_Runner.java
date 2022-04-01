@@ -22,7 +22,7 @@ Player mainPlayer;
 
 Ray test;
 ArrayList<Ray> allRays = new ArrayList<Ray>();
-PVector[][] boundary = new PVector[2][2];
+PVector[][] boundary = new PVector[10][2];
 
 boolean[] direction = new boolean[4];
 public void setup() {
@@ -35,6 +35,11 @@ public void setup() {
 
     boundary[1][0] = new PVector(width*1/2, height/4);
     boundary[1][1] = new PVector(width*1/2, height*1/2); 
+
+    for(int x = 0; x < 10; x++){
+        boundary[x][0] = new PVector(random(0, width), random(0, height));
+        boundary[x][1] = new PVector(random(0, width), random(0, height));
+    }    
 }
 
 public void draw() {
@@ -59,7 +64,6 @@ public void draw() {
         line(boundary[x][0].x, boundary[x][0].y, boundary[x][1].x, boundary[x][1].y);
     }
     for(Ray a: allRays){
-        a.display();
         a.connectIntersect();
     }
 }
@@ -425,19 +429,6 @@ public class Ray{
     public void setDirection(PVector dirPos){
         direction = dirPos.copy().sub(pos);
         direction.normalize();
-    }
-
-    public void display(){
-        pushMatrix();
-        fill(255);
-        ellipseMode(CENTER);
-        circle(pos.x, pos.y, 15);
-
-        stroke(255);
-        translate(pos.x, pos.y);
-        line(0,0, direction.x*20, direction.y*20);
-        popMatrix();
-        
     }
 
     public boolean intersect(PVector start, PVector end){

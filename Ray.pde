@@ -13,19 +13,6 @@ public class Ray{
         direction.normalize();
     }
 
-    void display(){
-        pushMatrix();
-        fill(255);
-        ellipseMode(CENTER);
-        circle(pos.x, pos.y, 15);
-
-        stroke(255);
-        translate(pos.x, pos.y);
-        line(0,0, direction.x*20, direction.y*20);
-        popMatrix();
-        
-    }
-
     boolean intersect(PVector start, PVector end){
         // L1 = boundary; L2 = ray
         // L1: (x1, y1) = start; (x2, y2) = end
