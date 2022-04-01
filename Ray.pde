@@ -42,9 +42,6 @@ public class Ray{
                 dist(pos.x, pos.y, temp.x, temp.y))){
                     intersection = temp;
             } // calculate the shortest wall
-            if((intersection.x == start.x && intersection.y == start.y)
-                || (intersection.x == end.x && intersection.x == end.y))
-                println("Heck Yeah");
             return true;
         }
         return false;

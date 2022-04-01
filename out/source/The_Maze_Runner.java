@@ -23,18 +23,18 @@ Player mainPlayer;
 Ray test;
 ArrayList<Ray> allRays = new ArrayList<Ray>();
 PVector[][] boundary = new PVector[10][2];
+PVector[] outerBoundary = new PVector[4];
 
 boolean[] direction = new boolean[4];
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
-    
-    boundary[0][0] = new PVector(width*3/4, height/4);
-    boundary[0][1] = new PVector(width*3/4, height*3/4);
 
-    boundary[1][0] = new PVector(width*1/2, height/4);
-    boundary[1][1] = new PVector(width*1/2, height*1/2); 
+    outerBoundary[0] = new PVector(0,0);
+    outerBoundary[1] = new PVector(width,0);
+    outerBoundary[2] = new PVector(width,height);
+    outerBoundary[3] = new PVector(0,height); 
 
     for(int x = 0; x < 10; x++){
         boundary[x][0] = new PVector(random(0, width), random(0, height));
@@ -46,7 +46,6 @@ public void draw() {
     background(100);    
     mainMaze.display();
     mainPlayer.action(direction);
-    
 
     allRays.clear();
     for(float theta = 0; theta <= 360; theta += 0.5f){
@@ -54,9 +53,17 @@ public void draw() {
         for(int x = 0; x < boundary.length; x++){
             temp.intersect(boundary[x][0], boundary[x][1]);
         }
-        if(temp.intersection != null){
-            allRays.add(temp);
-        }
+        if(temp.intersection == null){
+            for(int i = 0; i < 3; i++){
+                if(temp.intersect(outerBoundary[i], outerBoundary[i+1]))
+                    println(outerBoundary[i] + " and " + outerBoundary[i+1]);
+                if(i == 2)
+                   temp.intersect(outerBoundary[0], outerBoundary[i+1]); 
+                
+            }
+            
+        } 
+        if(temp.intersection != null) allRays.add(temp);
     }
 
     stroke(255);
@@ -460,9 +467,6 @@ public class Ray{
                 dist(pos.x, pos.y, temp.x, temp.y))){
                     intersection = temp;
             } // calculate the shortest wall
-            if((intersection.x == start.x && intersection.y == start.y)
-                || (intersection.x == end.x && intersection.x == end.y))
-                println("Heck Yeah");
             return true;
         }
         return false;
