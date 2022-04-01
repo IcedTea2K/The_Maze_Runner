@@ -61,21 +61,21 @@ public class Player {
 
     void detectWalls(MazeSquare targetSquare){
         playerVisibility.clear();
-        PVector[] squareBoundary = targetSquare.getBoundaryVerticies();
+        PVector[] squareBoundary = targetSquare.getBoundaryVerticies(); // will be used to detect the walls
 
         for(float theta = 0; theta <= 360; theta += 0.5){
-            Ray temp = new Ray(this.loc.copy(), theta);
+            Ray temp = new Ray(this.loc.copy(), theta); // a temporary ray --> check which one touch the walls
             for(int x = 0; x<3; x++){
                 if(temp.intersect(squareBoundary[x], squareBoundary[x+1]))
                     break;
                 else if(x == 2)
                     temp.intersect(squareBoundary[0], squareBoundary[x+1]);
             }    
-            if(temp.intersection != null) playerVisibility.add(temp);
+            if(temp.intersection != null) playerVisibility.add(temp); // only add those that touch the walls
         }
-        println("playerVisibility.size(): "+playerVisibility.size());   
+        
         for(Ray r: playerVisibility)
-            r.connectIntersect();
+            r.connectIntersect(); // display the rays
     }
 
     void display(){
