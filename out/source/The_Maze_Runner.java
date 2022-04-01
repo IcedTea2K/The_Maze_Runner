@@ -22,7 +22,7 @@ Player mainPlayer;
 
 Ray test;
 ArrayList<Ray> allRays = new ArrayList<Ray>();
-PVector[] boundary = new PVector[2];
+PVector[][] boundary = new PVector[2][2];
 
 boolean[] direction = new boolean[4];
 public void setup() {
@@ -30,10 +30,11 @@ public void setup() {
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
     
-    boundary[0] = new PVector(width*3/4, height/4);
-    boundary[1] = new PVector(width*3/4, height*3/4);
+    boundary[0][0] = new PVector(width*3/4, height/4);
+    boundary[0][1] = new PVector(width*3/4, height*3/4);
 
-    
+    boundary[1][0] = new PVector(width*1/2, height/4);
+    boundary[1][1] = new PVector(width*1/2, height*1/2); 
 }
 
 public void draw() {
@@ -45,13 +46,18 @@ public void draw() {
     allRays.clear();
     for(float theta = 0; theta <= 360; theta += 0.5f){
         Ray temp = new Ray(new PVector(mouseX, mouseY), theta);
-        if(temp.intersect(boundary[0], boundary[1])){
+        for(int x = 0; x < boundary.length; x++){
+            temp.intersect(boundary[x][0], boundary[x][1]);
+        }
+        if(temp.intersection != null){
             allRays.add(temp);
         }
     }
 
     stroke(255);
-    line(boundary[0].x, boundary[0].y, boundary[1].x, boundary[1].y);
+    for(int x = 0; x < boundary.length; x++){
+        line(boundary[x][0].x, boundary[x][0].y, boundary[x][1].x, boundary[x][1].y);
+    }
     for(Ray a: allRays){
         a.display();
         a.connectIntersect();
@@ -409,7 +415,7 @@ public class Player {
 public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
-    PVector intersection;
+    PVector intersection = null;
     public Ray (PVector pos, float angle) {
         this.pos = pos;
         direction.x = cos(radians(angle));
@@ -455,9 +461,14 @@ public class Ray{
         float u = ((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/denominator; 
 
         if((0 < t && t < 1) && u > 0){
-            intersection = new PVector(
+            PVector temp = new PVector(
                 (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
             );
+            if(intersection == null ||  
+                (dist(pos.x, pos.y, intersection.x, intersection.y) > 
+                dist(pos.x, pos.y, temp.x, temp.y))){
+                    intersection = temp;
+            } // calculate the shortest wall
             if((intersection.x == start.x && intersection.y == start.y)
                 || (intersection.x == end.x && intersection.x == end.y))
                 println("Heck Yeah");
