@@ -59,17 +59,23 @@ public class Player {
         loc.add(velocity);
     }
 
-    void detectWalls(MazeSquare targetSquare){
+    void detectWalls(){
         playerVisibility.clear();
-        PVector[] squareBoundary = targetSquare.getBoundaryVerticies(); // will be used to detect the walls
 
-        for(float theta = 0; theta <= 360; theta += 0.5){ 
+        for(float theta = 0; theta <= 360; theta += 2){ 
             Ray temp = new Ray(this.loc.copy(), theta); // a temporary ray 
-            for(int x = 0; x<3; x++){
-                if(temp.intersect(squareBoundary[x], squareBoundary[x+1]))
-                    break;
-                else if(x == 2)
-                    temp.intersect(squareBoundary[0], squareBoundary[x+1]);
+            for(int x = 0; x < maze.allSquares.size(); x++){
+                for(int y = 0; y < maze.allSquares.get(x).size();y++){
+                    MazeSquare targetSquare = maze.allSquares.get(x).get(y);
+                    PVector[] squareBoundary = targetSquare.getBoundaryVerticies();
+                    for(int z = 0; z<3; z++){
+                        if(!targetSquare.isClosed[z]) continue;
+                        if(temp.intersect(squareBoundary[z], squareBoundary[z+1]))
+                            break;
+                        else if(z == 2 && !targetSquare.isClosed[3])
+                            temp.intersect(squareBoundary[0], squareBoundary[3]);
+                    }
+                }
             }    
             if(temp.intersection != null) playerVisibility.add(temp); // only add those that touch the walls
         }
@@ -96,7 +102,7 @@ public class Player {
 
             currSquareIdx = maze.getSquare(0,0).getIdx();
         }
-        detectWalls(currSquare);
+        detectWalls();
         circle(loc.x, loc.y, size);
         popMatrix();
     }
