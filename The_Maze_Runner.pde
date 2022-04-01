@@ -37,8 +37,7 @@ void draw() {
         }
         if(temp.intersection == null){
             for(int i = 0; i < 3; i++){
-                if(temp.intersect(outerBoundary[i], outerBoundary[i+1]))
-                    println(outerBoundary[i] + " and " + outerBoundary[i+1]);
+                temp.intersect(outerBoundary[i], outerBoundary[i+1])
                 if(i == 2)
                    temp.intersect(outerBoundary[0], outerBoundary[i+1]); 
                 
