@@ -323,6 +323,8 @@ public class Player {
     MazeSquare currSquare;
     int[] currSquareIdx;
     MazeMaker maze;
+    boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
+                                                            // top - right - bottom - left
 
     ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
     public Player (MazeMaker maze, MazeSquare firstSquare) {
@@ -338,41 +340,53 @@ public class Player {
         velocity.y = 0;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
-        float[] boundary = currSquare.getBoundary();
-        
+        float[] boundary = currSquare.getBoundary(); // actual boundary
+        bufferZones[0] = (boundary[0] < loc.y + speed&& loc.y + speed< boundary[0] + size/2); // buffer zone  
+        bufferZones[1] = (boundary[1] - size/2.f < loc.x - speed && loc.x - speed < boundary[1]); // buffer zone
+        bufferZones[2] = (boundary[2] - size/2.f < loc.y - speed && loc.y - speed < boundary[2]); // buffer zone  
+        bufferZones[3] = (boundary[3] < loc.x + speed && loc.x + speed < boundary[3] + size/2); // buffer zone
         if(input[0]){
             velocity.x = -speed;
-            if(loc.x + velocity.x < boundary[3] + size/2){
+            if(loc.x + velocity.x < boundary[3] + size/2){ // collision boundary
                 if(currSquare.isClosed[3])
                     velocity.x = 0;
-                else currSquareIdx[0]--;
+                else if(!checkBuffer()) currSquareIdx[0]--;
             }
         }            
         else if(input[2]){
             velocity.x = speed;
-            if(loc.x + velocity.x > boundary[1] - size/2){
+            if(loc.x + velocity.x > boundary[1] - size/2){ // collision boundary
                 if(currSquare.isClosed[1])
                     velocity.x = 0;
-                else currSquareIdx[0]++;
+                else if(!checkBuffer()) currSquareIdx[0]++;
             }
         }
         if(input[1]){
             velocity.y = -speed;
-            if(loc.y + velocity.y < boundary[0] + size/2){
+            if(loc.y + velocity.y < boundary[0] + size/2){ // collision boundary
                 if(currSquare.isClosed[0])
                     velocity.y = 0;
-                else currSquareIdx[1]--;
+                else if(!checkBuffer()) currSquareIdx[1]--;
             }
         }
         else if(input[3]){
             velocity.y = speed;
-            if(loc.y + velocity.y > boundary[2] - size/2){
+            if(loc.y + velocity.y > boundary[2] - size/2){ // collision boundary
                 if(currSquare.isClosed[2])
                     velocity.y = 0;
-                else currSquareIdx[1]++;
+                else if(!checkBuffer()) currSquareIdx[1]++;
             }
         }
-        loc.add(velocity);
+        loc.add(velocity); 
+        println("bufferZones: "+Arrays.toString(bufferZones));
+        println("Loc: " + loc + " square's loc: " + currSquare.getLocation() + " # of rays: " + playerVisibility.size());
+    }
+
+    public boolean checkBuffer(){
+        for(int x = 0; x < 4; x++){
+            if(bufferZones[x]) return true;
+        }  
+        return false;
     }
 
     public boolean castRay(Ray targetRay, MazeSquare targetSquare, int entrySide){
@@ -380,7 +394,7 @@ public class Player {
        PVector[] squareBoundary = targetSquare.getBoundaryVerticies(); // get the boundary
 
        for(int z = 0; z < 4; z++){
-            if(entrySide == z) continue;
+            if(entrySide == z) continue; // prevent infinite recursion
             if(z != 3){
                 intersectedSide = (targetRay.intersect(squareBoundary[z], squareBoundary[z+1])) ? z : intersectedSide;
             }else{
@@ -390,13 +404,13 @@ public class Player {
         if(intersectedSide == -1) return false; // precaution against when the ray doesn't intersect any of the 4 sides for some reason
 
         int[] squareIdx = targetSquare.getIdx();
-        println(intersectedSide);
+        
         if((Arrays.equals(squareIdx, new int[]{0,0}) && intersectedSide == 0) || 
             (Arrays.equals(squareIdx, new int[]{maze.columns-1,maze.rows-1}) && intersectedSide == 2)){
             return true;
         }
-        if(!targetSquare.isClosed[intersectedSide]){
-            if(intersectedSide == 0)
+        if(!targetSquare.isClosed[intersectedSide]){ // check if the intersected side is open
+            if(intersectedSide == 0) // if open go to the next square
                 squareIdx[1]--; // go up one row
             else if(intersectedSide == 1)
                 squareIdx[0]++; // go right one column
