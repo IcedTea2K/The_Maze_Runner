@@ -392,9 +392,12 @@ public class Player {
         if(intersectedSide == -1) return false; // precaution against when the ray doesn't intersect any of the 4 sides for some reason
 
         int[] squareIdx = targetSquare.getIdx();
-        println(squareIdx);
-        if(!targetSquare.isClosed[intersectedSide] && !Arrays.equals(squareIdx, new int[]{0,0})
-            && !Arrays.equals(squareIdx, new int[]{maze.columns-1,maze.rows-1})){
+        println(intersectedSide);
+        if((Arrays.equals(squareIdx, new int[]{0,0}) && intersectedSide == 0) || 
+            (Arrays.equals(squareIdx, new int[]{maze.columns-1,maze.rows-1}) && intersectedSide == 2)){
+            return true;
+        }
+        if(!targetSquare.isClosed[intersectedSide]){
             if(intersectedSide == 0)
                 squareIdx[1]--; // go up one row
             else if(intersectedSide == 1)
@@ -509,11 +512,6 @@ public class Ray{
                 (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
             );
             intersection = temp;
-            // if(intersection == null ||  
-            //     (dist(pos.x, pos.y, intersection.x, intersection.y) > 
-            //     dist(pos.x, pos.y, temp.x, temp.y))){
-            //         intersection = temp;
-            // } // calculate the shortest wall
             return true;
         }
         return false;
