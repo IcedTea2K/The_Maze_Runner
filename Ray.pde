@@ -37,11 +37,7 @@ public class Ray{
             PVector temp = new PVector(
                 (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
             );
-            if(intersection == null ||  
-                (dist(pos.x, pos.y, intersection.x, intersection.y) > 
-                dist(pos.x, pos.y, temp.x, temp.y))){
-                    intersection = temp;
-            } // calculate the shortest wall
+            intersection = temp;
             return true;
         }
         return false;

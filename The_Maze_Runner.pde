@@ -1,4 +1,5 @@
 import java.util.*;
+
 MazeMaker mainMaze;
 Player mainPlayer;
 

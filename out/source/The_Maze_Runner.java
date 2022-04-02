@@ -17,6 +17,7 @@ import java.io.IOException;
 public class The_Maze_Runner extends PApplet {
 
 
+
 MazeMaker mainMaze;
 Player mainPlayer;
 
@@ -374,26 +375,67 @@ public class Player {
         loc.add(velocity);
     }
 
-    public void detectWalls(){
-        playerVisibility.clear();
+    public boolean castRay(Ray targetRay, MazeSquare targetSquare, int entrySide){
+       int intersectedSide = -1;       
+       PVector[] squareBoundary = targetSquare.getBoundaryVerticies(); // get the boundary
 
-        for(float theta = 0; theta <= 360; theta += 2){ 
-            Ray temp = new Ray(this.loc.copy(), theta); // a temporary ray 
-            for(int x = 0; x < maze.allSquares.size(); x++){
-                for(int y = 0; y < maze.allSquares.get(x).size();y++){
-                    MazeSquare targetSquare = maze.allSquares.get(x).get(y);
-                    PVector[] squareBoundary = targetSquare.getBoundaryVerticies();
-                    for(int z = 0; z<3; z++){
-                        if(!targetSquare.isClosed[z]) continue;
-                        if(temp.intersect(squareBoundary[z], squareBoundary[z+1]))
-                            break;
-                        else if(z == 2 && !targetSquare.isClosed[3])
-                            temp.intersect(squareBoundary[0], squareBoundary[3]);
-                    }
-                }
-            }    
-            if(temp.intersection != null) playerVisibility.add(temp); // only add those that touch the walls
+       for(int z = 0; z < 3; z++){
+            if(entrySide == z ) continue;
+            if(targetRay.intersect(squareBoundary[z], squareBoundary[z+1])){
+                intersectedSide = z;
+                break;
+            }
+            else if(z == 2 && entrySide != 3 && targetRay.intersect(squareBoundary[0], squareBoundary[3])){
+                intersectedSide = 3;
+            }
+        } 
+        if(intersectedSide == -1) return false; // precaution against when the ray doesn't intersect any of the 4 sides for some reason
+
+        int[] squareIdx = targetSquare.getIdx();
+        println(squareIdx);
+        if(!targetSquare.isClosed[intersectedSide] && !Arrays.equals(squareIdx, new int[]{0,0})
+            && !Arrays.equals(squareIdx, new int[]{maze.columns-1,maze.rows-1})){
+            if(intersectedSide == 0)
+                squareIdx[1]--; // go up one row
+            else if(intersectedSide == 1)
+                squareIdx[0]++; // go right one column
+            else if(intersectedSide == 2)
+                squareIdx[1]++; // go down one row
+            else if(intersectedSide == 3)
+                squareIdx[0]--; // go left one column
+            intersectedSide += (intersectedSide <= 1) ? 2 : -2; // top of one square is bot of the other; same for left and right
+            return castRay(targetRay, maze.getSquare(squareIdx[1], squareIdx[0]), intersectedSide);
         }
+
+        return true; 
+    }
+
+    public void detectWalls(){
+        playerVisibility.clear(); // reset everytime
+
+        for(float theta = 0; theta<=360; theta+=2){
+            Ray temp = new Ray(this.loc.copy(), theta);
+            if(castRay(temp, currSquare, -1)) // make use of passing pointers --> doesn't have to return ray
+                playerVisibility.add(temp);
+        }
+
+        // for(float theta = 0; theta <= 360; theta += 2){ 
+        //     Ray temp = new Ray(this.loc.copy(), theta); // a temporary ray 
+        //     for(int x = 0; x < maze.allSquares.size(); x++){
+        //         for(int y = 0; y < maze.allSquares.get(x).size();y++){
+        //             MazeSquare targetSquare = maze.allSquares.get(x).get(y);
+        //             PVector[] squareBoundary = targetSquare.getBoundaryVerticies();
+        //             for(int z = 0; z<3; z++){
+        //                 if(!targetSquare.isClosed[z]) continue;
+        //                 if(temp.intersect(squareBoundary[z], squareBoundary[z+1]))
+        //                     break;
+        //                 else if(z == 2 && !targetSquare.isClosed[3])
+        //                     temp.intersect(squareBoundary[0], squareBoundary[3]);
+        //             }
+        //         }
+        //     }    
+        //     if(temp.intersection != null) playerVisibility.add(temp); // only add those that touch the walls
+        // }
         
         for(Ray r: playerVisibility)
             r.connectIntersect(); // display the rays
@@ -466,11 +508,12 @@ public class Ray{
             PVector temp = new PVector(
                 (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
             );
-            if(intersection == null ||  
-                (dist(pos.x, pos.y, intersection.x, intersection.y) > 
-                dist(pos.x, pos.y, temp.x, temp.y))){
-                    intersection = temp;
-            } // calculate the shortest wall
+            intersection = temp;
+            // if(intersection == null ||  
+            //     (dist(pos.x, pos.y, intersection.x, intersection.y) > 
+            //     dist(pos.x, pos.y, temp.x, temp.y))){
+            //         intersection = temp;
+            // } // calculate the shortest wall
             return true;
         }
         return false;
