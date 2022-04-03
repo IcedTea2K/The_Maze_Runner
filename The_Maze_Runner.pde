@@ -34,12 +34,14 @@ void drawMainScene(){
     rect(0, 0, mainSceneW, mainSceneH); // draw the background
     
     float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size();
+    float max = 100;
     for(int x = 0; x < mainPlayer.playerVisibility.size();x++){
         float dist = mainPlayer.playerVisibility.get(x).distanceToIntersection();
         
         dist *= cos(radians(mainPlayer.playerVisibility.get(x).heading - mainPlayer.heading)); // fix the fish eye effects
-        float brightness = map(dist, 0, 100, 255, 0);
-        float sliceHeight = map(dist, 0, 100, mainSceneH, 0);
+        if(dist>max) max = dist;
+        float brightness = map(dist, 0, max, 255, 0);
+        float sliceHeight = map(dist, 0, max, mainSceneH, 0);
 
         noStroke();
         rectMode(CENTER);
