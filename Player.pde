@@ -61,16 +61,17 @@ public class Player {
                 direction.setMag(0);
             else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
         }
-        println("futureLoc: "+futureLoc);
-        println("boundary: "+Arrays.toString(boundary)); 
+        // println("futureLoc: "+futureLoc);
+        // println("boundary: "+Arrays.toString(boundary)); 
+        println("playerVisibility.size(): "+playerVisibility.size());
         println(Arrays.toString(bufferZones));
         loc.add(direction);
         track.add(currSquare);
         
-        bufferZones[0] = (boundary[0] <= loc.y && loc.y < boundary[0] + size/2); // buffer zone  
-        bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x <= boundary[1]); // buffer zone
-        bufferZones[2] = (boundary[2] - size/2. < loc.y && loc.y <= boundary[2]); // buffer zone  
-        bufferZones[3] = (boundary[3] <= loc.x && loc.x < boundary[3] + size/2); // buffer zone 
+        bufferZones[0] = (boundary[0] - size/2. <= loc.y && loc.y < boundary[0] + size/2.); // buffer zone  
+        bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x <= boundary[1] + size/2.); // buffer zone
+        bufferZones[2] = (boundary[2] - size/2. < loc.y && loc.y <= boundary[2] + size/2.); // buffer zone  
+        bufferZones[3] = (boundary[3] - size/2. <= loc.x && loc.x < boundary[3] + size/2.); // buffer zone 
     }
 
     int checkBuffer(){
