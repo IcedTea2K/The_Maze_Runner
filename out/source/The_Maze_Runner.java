@@ -205,7 +205,7 @@ public class MazeMaker { // create the maze
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
 
-public class MazeSquare implements Comparable<MazeSquare>{
+public class MazeSquare{
     final PVector loc; // prevent these from being changed later on
     final int[] idx;
     boolean[] isClosed = {true, true, true, true};
@@ -220,9 +220,9 @@ public class MazeSquare implements Comparable<MazeSquare>{
         this.idx = idx;
     }
 
-    public int compareTo(MazeSquare s){
-        return PApplet.parseInt(PVector.sub(this.loc, new PVector(0,0)).magSq());
-    }
+    // public int compareTo(MazeSquare s){
+    //     return int(PVector.sub(this.loc, new PVector(0,0)).magSq());
+    // }
 
     public void display(){
         pushMatrix();
@@ -328,7 +328,7 @@ public class Player {
     MazeMaker maze;
     boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
                                                             // top - right - bottom - left
-    SortedSet<MazeSquare> track = new TreeSet<MazeSquare>();
+    HashSet<MazeSquare> track = new HashSet<MazeSquare>();
     ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;

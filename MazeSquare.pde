@@ -1,7 +1,7 @@
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
 
-public class MazeSquare implements Comparable<MazeSquare>{
+public class MazeSquare{
     final PVector loc; // prevent these from being changed later on
     final int[] idx;
     boolean[] isClosed = {true, true, true, true};
@@ -14,10 +14,6 @@ public class MazeSquare implements Comparable<MazeSquare>{
         loc = new PVector(xPos, yPos);
         this.size = size;
         this.idx = idx;
-    }
-
-    public int compareTo(MazeSquare s){
-        return int(PVector.sub(this.loc, new PVector(0,0)).magSq());
     }
 
     void display(){
