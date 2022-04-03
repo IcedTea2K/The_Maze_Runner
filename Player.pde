@@ -1,13 +1,13 @@
 public class Player {
     PVector loc = new PVector(0,0);
     PVector velocity = new PVector(0,0);
-    float speed = 1;
+    float speed = 1.5;
     int size = 6;
 
     MazeSquare currSquare;
     int[] currSquareIdx;
     MazeMaker maze;
-    boolean[] bufferZones = {true, true, true, true}; // the zone between actual boundary and collision boundary
+    boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
                                                             // top - right - bottom - left
 
     ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
@@ -31,7 +31,7 @@ public class Player {
             if(loc.x + velocity.x < boundary[3] + size/2){ // collision boundary
                 if(currSquare.isClosed[3])
                     velocity.x = 0;
-                else currSquareIdx[0]--;
+                else if(loc.x + velocity.x < boundary[1]) currSquareIdx[0]--;
             }
         }            
         else if(input[2]){
@@ -39,7 +39,7 @@ public class Player {
             if(loc.x + velocity.x > boundary[1] - size/2){ // collision boundary
                 if(currSquare.isClosed[1])
                     velocity.x = 0;
-                else currSquareIdx[0]++;
+                else if(loc.x + velocity.x > boundary[1]) currSquareIdx[0]++;
             }
         }
         if(input[1]){
@@ -47,7 +47,7 @@ public class Player {
             if(loc.y + velocity.y < boundary[0] + size/2){ // collision boundary
                 if(currSquare.isClosed[0])
                     velocity.y = 0;
-                else currSquareIdx[1]--;
+                else if(loc.y + velocity.y < boundary[0]) currSquareIdx[1]--;
             }
         }
         else if(input[3]){
@@ -55,19 +55,23 @@ public class Player {
             if(loc.y + velocity.y > boundary[2] - size/2){ // collision boundary
                 if(currSquare.isClosed[2])
                     velocity.y = 0;
-                else currSquareIdx[1]++;
+                else if(loc.y + velocity.y > boundary[2]) currSquareIdx[1]++;
             }
         }
-        loc.add(velocity); 
+        loc.add(velocity);
+        bufferZones[0] = (boundary[0] <= loc.y && loc.y <= boundary[0] + size/2); // buffer zone  
+        bufferZones[1] = (boundary[1] - size/2. <= loc.x && loc.x <= boundary[1]); // buffer zone
+        bufferZones[2] = (boundary[2] - size/2. <= loc.y && loc.y <= boundary[2]); // buffer zone  
+        bufferZones[3] = (boundary[3] <= loc.x && loc.x <= boundary[3] + size/2); // buffer zone 
         println("bufferZones: "+Arrays.toString(bufferZones));
         println("Loc: " + loc + " square's loc: " + currSquare.getLocation() + " # of rays: " + playerVisibility.size());
     }
 
-    boolean checkBuffer(){
+    int checkBuffer(){
         for(int x = 0; x < 4; x++){
-            if(bufferZones[x]) return true;
+            if(bufferZones[x]) return x;
         }  
-        return false;
+        return -1;
     }
 
     boolean castRay(Ray targetRay, MazeSquare targetSquare, int entrySide){
@@ -113,19 +117,18 @@ public class Player {
             Ray temp = new Ray(this.loc.copy(), theta);
             if(castRay(temp, currSquare, -1)) // make use of passing pointers --> doesn't have to return ray
                 playerVisibility.add(temp);
-            else{
-                int[] neighborIdx = maze.checkNeighbor(currSquare);
-                for(int x = 0; x < 4; x++){
-                    if(neighborIdx[x] == -1) continue;
-                    if(x%2 == 0){
-                        if(castRay(temp, maze.getSquare(currSquare.getIdx()[1], neighborIdx[x]), -1)) break;
-                    }else{
-                        if(castRay(temp, maze.getSquare(neighborIdx[x], currSquare.getIdx()[0]), -1)) break;
-                    }
-                }
+            else if(checkBuffer() != -1){
+                if(checkBuffer() == 0)
+                    castRay(temp, maze.getSquare(currSquare.getIdx()[1]-1, currSquare.getIdx()[0]), -1);
+                else if(checkBuffer() == 1)
+                    castRay(temp, maze.getSquare(currSquare.getIdx()[1], currSquare.getIdx()[0] + 1), -1);
+                else if(checkBuffer() == 2)
+                    castRay(temp, maze.getSquare(currSquare.getIdx()[1]+1, currSquare.getIdx()[0]), -1);
+                else if(checkBuffer() == 3)
+                    castRay(temp, maze.getSquare(currSquare.getIdx()[1], currSquare.getIdx()[0]-1), -1);
             }
         }
-        
+        if(playerVisibility.size() == 0) println("Heck Yeah");
         for(Ray r: playerVisibility)
             r.connectIntersect(); // display the rays
     }
