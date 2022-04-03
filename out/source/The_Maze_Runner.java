@@ -26,11 +26,11 @@ PVector[][] boundary = new PVector[10][2];
 PVector[] outerBoundary = new PVector[4];
 
 boolean[] direction = new boolean[4];
+
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
-    
 }
 
 public void draw() {
@@ -187,7 +187,7 @@ public class MazeMaker { // create the maze
 
     public void display(){
         drawBackground();
-        drawGrid();
+        // drawGrid();
     }
 
     public MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square
@@ -205,7 +205,7 @@ public class MazeMaker { // create the maze
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
 
-public class MazeSquare {
+public class MazeSquare implements Comparable<MazeSquare>{
     final PVector loc; // prevent these from being changed later on
     final int[] idx;
     boolean[] isClosed = {true, true, true, true};
@@ -218,6 +218,10 @@ public class MazeSquare {
         loc = new PVector(xPos, yPos);
         this.size = size;
         this.idx = idx;
+    }
+
+    public int compareTo(MazeSquare s){
+        return PApplet.parseInt(PVector.sub(this.loc, new PVector(0,0)).magSq());
     }
 
     public void display(){
@@ -324,7 +328,7 @@ public class Player {
     MazeMaker maze;
     boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
                                                             // top - right - bottom - left
-
+    SortedSet<MazeSquare> track = new TreeSet<MazeSquare>();
     ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
@@ -374,6 +378,8 @@ public class Player {
             }
         }
         loc.add(velocity);
+        track.add(currSquare);
+
         bufferZones[0] = (boundary[0] <= loc.y && loc.y < boundary[0] + size/2); // buffer zone  
         bufferZones[1] = (boundary[1] - size/2.f < loc.x && loc.x <= boundary[1]); // buffer zone
         bufferZones[2] = (boundary[2] - size/2.f < loc.y && loc.y <= boundary[2]); // buffer zone  
@@ -452,7 +458,11 @@ public class Player {
     public void display(){
         pushMatrix();
         translate(maze.getLoc().x, maze.getLoc().y);
-
+        Iterator<MazeSquare> x = track.iterator();
+        while(x.hasNext()){
+            x.next().display();
+        }
+        println(track.size());
         ellipseMode(CENTER);
         noStroke();
         fill(0,255,0);
@@ -469,7 +479,7 @@ public class Player {
         }
         detectWalls();
         circle(loc.x, loc.y, size);
-        popMatrix();
+        popMatrix();        
     }
 
     public void action(boolean[] input){

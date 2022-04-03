@@ -121,7 +121,7 @@ public class MazeMaker { // create the maze
 
     void display(){
         drawBackground();
-        drawGrid();
+        // drawGrid();
     }
 
     MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square

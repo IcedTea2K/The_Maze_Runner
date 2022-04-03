@@ -9,7 +9,7 @@ public class Player {
     MazeMaker maze;
     boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
                                                             // top - right - bottom - left
-
+    SortedSet<MazeSquare> track = new TreeSet<MazeSquare>();
     ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
     public Player (MazeMaker maze, MazeSquare firstSquare) {
         this.maze = maze;
@@ -59,6 +59,8 @@ public class Player {
             }
         }
         loc.add(velocity);
+        track.add(currSquare);
+
         bufferZones[0] = (boundary[0] <= loc.y && loc.y < boundary[0] + size/2); // buffer zone  
         bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x <= boundary[1]); // buffer zone
         bufferZones[2] = (boundary[2] - size/2. < loc.y && loc.y <= boundary[2]); // buffer zone  
@@ -137,7 +139,11 @@ public class Player {
     void display(){
         pushMatrix();
         translate(maze.getLoc().x, maze.getLoc().y);
-
+        Iterator<MazeSquare> x = track.iterator();
+        while(x.hasNext()){
+            x.next().display();
+        }
+        println(track.size());q
         ellipseMode(CENTER);
         noStroke();
         fill(0,255,0);
@@ -154,7 +160,7 @@ public class Player {
         }
         detectWalls();
         circle(loc.x, loc.y, size);
-        popMatrix();
+        popMatrix();        
     }
 
     void action(boolean[] input){
