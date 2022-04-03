@@ -349,13 +349,11 @@ public class Player {
             direction.setMag(-speed);
         else {
             direction.setMag(0);
-            return;
         }
 
         float[] boundary = currSquare.getBoundary(); // actual boundary
         PVector futureLoc = PVector.add(direction, loc);
-        println("futureLoc: "+futureLoc);
-        println("boundary: "+Arrays.toString(boundary));
+        
         if(futureLoc.x <= boundary[3] + size/2){ // collision boundary
             if(currSquare.isClosed[3])
                 direction.setMag(0);
@@ -373,8 +371,10 @@ public class Player {
             if(currSquare.isClosed[2])
                 direction.setMag(0);
             else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
-        } 
-        println(Arrays.toString(currSquareIdx));
+        }
+        println("futureLoc: "+futureLoc);
+        println("boundary: "+Arrays.toString(boundary)); 
+        println(Arrays.toString(bufferZones));
         loc.add(direction);
         track.add(currSquare);
 
@@ -432,9 +432,7 @@ public class Player {
 
         for(float theta = -45 + heading; theta<=45+heading; theta+=0.5f){
             Ray temp = new Ray(this.loc.copy(), theta);
-            if(castRay(temp, currSquare, -1)) // make use of passing pointers --> doesn't have to return ray
-                playerVisibility.add(temp);
-            else if(checkBuffer() != -1){
+            if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){
                 if(checkBuffer() == 0)
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1]-1, currSquare.getIdx()[0]), -1);
                 else if(checkBuffer() == 1)
@@ -443,8 +441,9 @@ public class Player {
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1]+1, currSquare.getIdx()[0]), -1);
                 else if(checkBuffer() == 3)
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1], currSquare.getIdx()[0]-1), -1);
-                if(temp.intersection != null) playerVisibility.add(temp);
+                
             }
+            if(temp.intersection != null) playerVisibility.add(temp);
         }
         
         for(Ray r: playerVisibility)
