@@ -27,9 +27,9 @@ public class Player {
 
         PVector direction;
         if(input[0]) // rotate
-            heading += -1;
+            heading += -2;
         else if(input[2])
-            heading += 1;
+            heading += 2;
         direction = PVector.fromAngle(radians(heading));
         
         if(input[1]) // move
@@ -40,6 +40,8 @@ public class Player {
 
         float[] boundary = currSquare.getBoundary(); // actual boundary
         PVector futureLoc = PVector.add(direction, loc);
+        println("futureLoc: "+futureLoc);
+        println("boundary: "+Arrays.toString(boundary));
         if(futureLoc.x < boundary[3] + size/2){ // collision boundary
             if(currSquare.isClosed[3])
                 direction.setMag(0);
@@ -51,13 +53,13 @@ public class Player {
         }else if(futureLoc.y < boundary[0] + size/2){ // collision boundary
             if(currSquare.isClosed[0])
                 direction.setMag(0);
-            else if(futureLoc.x < boundary[0]) currSquareIdx[1]--;
+            else if(futureLoc.y < boundary[0]) currSquareIdx[1]--;
         }else if(futureLoc.y > boundary[2] - size/2){ // collision boundary
             if(currSquare.isClosed[2])
                 direction.setMag(0);
             else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
         } 
-
+        println(Arrays.toString(currSquareIdx));
         loc.add(direction);
         track.add(currSquare);
 
