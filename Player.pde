@@ -25,10 +25,7 @@ public class Player {
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
         float[] boundary = currSquare.getBoundary(); // actual boundary
-        bufferZones[0] = (boundary[0] < loc.y + speed&& loc.y + speed< boundary[0] + size/2); // buffer zone  
-        bufferZones[1] = (boundary[1] - size/2. < loc.x - speed && loc.x - speed < boundary[1]); // buffer zone
-        bufferZones[2] = (boundary[2] - size/2. < loc.y - speed && loc.y - speed < boundary[2]); // buffer zone  
-        bufferZones[3] = (boundary[3] < loc.x + speed && loc.x + speed < boundary[3] + size/2); // buffer zone
+        
         if(input[0]){
             velocity.x = -speed;
             if(loc.x + velocity.x < boundary[3] + size/2){ // collision boundary
@@ -62,6 +59,10 @@ public class Player {
             }
         }
         loc.add(velocity); 
+        bufferZones[0] = (boundary[0] < loc.y && loc.y< boundary[0] + size/2); // buffer zone  
+        bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x < boundary[1]); // buffer zone
+        bufferZones[2] = (boundary[2] - size/2. < loc.y && loc.y < boundary[2]); // buffer zone  
+        bufferZones[3] = (boundary[3] < loc.x && loc.x < boundary[3] + size/2); // buffer zone
         println("bufferZones: "+Arrays.toString(bufferZones));
         println("Loc: " + loc + " square's loc: " + currSquare.getLocation() + " # of rays: " + playerVisibility.size());
     }
