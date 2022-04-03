@@ -461,7 +461,7 @@ public class Player {
     public void detectWalls(){ // gives the player's visibility
         playerVisibility.clear(); // reset everytime
 
-        for(float theta = -45 + heading; theta<=45+heading; theta+=0.5f){
+        for(float theta = -30+ heading; theta<=30+heading; theta+=0.5f){
             Ray temp = new Ray(this.loc.copy(), theta);
             if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){ // if in buffer zone, must check the next square as well
                 if(checkBuffer() == 0)
