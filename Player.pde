@@ -1,6 +1,5 @@
 public class Player {
     PVector loc = new PVector(0,0);
-    PVector velocity = new PVector(0,0);
     float speed = 1.5;
     int size = 6;
     float heading = 0;
@@ -21,8 +20,6 @@ public class Player {
     }
 
     void move(boolean[] input){
-        velocity.x = 0; // reset velocity before taking in inputs
-        velocity.y = 0;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
         PVector direction;
@@ -40,33 +37,30 @@ public class Player {
             direction.setMag(0);
         }
 
-        float[] boundary = currSquare.getBoundary(); // actual boundary
+        float[] boundary = currSquare.getBoundary(); 
         PVector futureLoc = PVector.add(direction, loc);
         
         if(futureLoc.x <= boundary[3] + size/2){ // collision boundary
             if(currSquare.isClosed[3])
                 direction.setMag(0);
-            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--;
+            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--; // actual boundary
         }else if(futureLoc.x >= boundary[1] - size/2){ // collision boundary
             if(currSquare.isClosed[1])
                 direction.setMag(0);
-            else if(futureLoc.x > boundary[1]) currSquareIdx[0]++;
+            else if(futureLoc.x > boundary[1]) currSquareIdx[0]++; // actual boundary
         }
         if(futureLoc.y <= boundary[0] + size/2){ // collision boundary
             if(currSquare.isClosed[0])
                 direction.setMag(0);
-            else if(futureLoc.y < boundary[0]) currSquareIdx[1]--;
+            else if(futureLoc.y < boundary[0]) currSquareIdx[1]--; // actual boundary
         }else if(futureLoc.y >= boundary[2] - size/2){ // collision boundary
             if(currSquare.isClosed[2])
                 direction.setMag(0);
-            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
+            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++; // actual boundary
         }
-        // println("futureLoc: "+futureLoc);
-        // println("boundary: "+Arrays.toString(boundary)); 
-        println("playerVisibility.size(): "+playerVisibility.size());
-        println(Arrays.toString(bufferZones));
-        loc.add(direction);
-        track.add(currSquare);
+        
+        loc.add(direction); // actually move after all the checks
+        track.add(currSquare); // record the path
         
         bufferZones[0] = (boundary[0] - size/2. <= loc.y && loc.y < boundary[0] + size/2.); // buffer zone  
         bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x <= boundary[1] + size/2.); // buffer zone
@@ -75,7 +69,7 @@ public class Player {
     }
 
     int checkBuffer(){
-        for(int x = 0; x < 4; x++){
+        for(int x = 0; x < 4; x++){ // return the index of the activated buffer zone
             if(bufferZones[x]) return x;
         }  
         return -1;
@@ -122,7 +116,7 @@ public class Player {
 
         for(float theta = -45 + heading; theta<=45+heading; theta+=0.5){
             Ray temp = new Ray(this.loc.copy(), theta);
-            if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){
+            if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){ // if in buffer zone, must check the next square as well
                 if(checkBuffer() == 0)
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1]-1, currSquare.getIdx()[0]), -1);
                 else if(checkBuffer() == 1)
