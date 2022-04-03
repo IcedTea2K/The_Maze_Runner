@@ -43,6 +43,10 @@ public class Ray{
         return false;
     }
 
+    void distanceToIntersection(){
+        return dist(pos.x, pos.y, intersection.x, intersection.y);
+    }
+
     void connectIntersect(){
         stroke(255);  
         line(pos.x, pos.y, intersection.x , intersection.y);
