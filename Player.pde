@@ -3,6 +3,7 @@ public class Player {
     PVector velocity = new PVector(0,0);
     float speed = 1.5;
     int size = 6;
+    float heading = 0;
 
     MazeSquare currSquare;
     int[] currSquareIdx;
@@ -24,41 +25,40 @@ public class Player {
         velocity.y = 0;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
-        float[] boundary = currSquare.getBoundary(); // actual boundary
+        PVector direction;
+        if(input[0]) // rotate
+            heading += -1;
+        else if(input[2])
+            heading += 1;
+        direction = PVector.fromAngle(radians(heading));
         
-        if(input[0]){
-            velocity.x = -speed;
-            if(loc.x + velocity.x < boundary[3] + size/2){ // collision boundary
-                if(currSquare.isClosed[3])
-                    velocity.x = 0;
-                else if(loc.x + velocity.x < boundary[1]) currSquareIdx[0]--;
-            }
-        }            
-        else if(input[2]){
-            velocity.x = speed;
-            if(loc.x + velocity.x > boundary[1] - size/2){ // collision boundary
-                if(currSquare.isClosed[1])
-                    velocity.x = 0;
-                else if(loc.x + velocity.x > boundary[3]) currSquareIdx[0]++;
-            }
-        }
-        if(input[1]){
-            velocity.y = -speed;
-            if(loc.y + velocity.y < boundary[0] + size/2){ // collision boundary
-                if(currSquare.isClosed[0])
-                    velocity.y = 0;
-                else if(loc.y + velocity.y < boundary[2]) currSquareIdx[1]--;
-            }
-        }
-        else if(input[3]){
-            velocity.y = speed;
-            if(loc.y + velocity.y > boundary[2] - size/2){ // collision boundary
-                if(currSquare.isClosed[2])
-                    velocity.y = 0;
-                else if(loc.y + velocity.y > boundary[0]) currSquareIdx[1]++;
-            }
-        }
-        loc.add(velocity);
+        if(input[1]) // move
+            direction.setMag(speed);
+        else if(input[3])
+            direction.setMag(-speed);
+        else direction.setMag(0);
+
+        float[] boundary = currSquare.getBoundary(); // actual boundary
+        PVector futureLoc = PVector.add(direction, loc);
+        if(futureLoc.x < boundary[3] + size/2){ // collision boundary
+            if(currSquare.isClosed[3])
+                direction.setMag(0);
+            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--;
+        }else if(futureLoc.x > boundary[1] - size/2){ // collision boundary
+            if(currSquare.isClosed[1])
+                direction.setMag(0);
+            else if(futureLoc.x > boundary[1]) currSquareIdx[0]++;
+        }else if(futureLoc.y < boundary[0] + size/2){ // collision boundary
+            if(currSquare.isClosed[0])
+                direction.setMag(0);
+            else if(futureLoc.x < boundary[0]) currSquareIdx[1]--;
+        }else if(futureLoc.y > boundary[2] - size/2){ // collision boundary
+            if(currSquare.isClosed[2])
+                direction.setMag(0);
+            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
+        } 
+
+        loc.add(direction);
         track.add(currSquare);
 
         bufferZones[0] = (boundary[0] <= loc.y && loc.y < boundary[0] + size/2); // buffer zone  
@@ -113,7 +113,7 @@ public class Player {
     void detectWalls(){ // gives the player's visibility
         playerVisibility.clear(); // reset everytime
 
-        for(float theta = 0; theta<=360; theta+=0.5){
+        for(float theta = -45 + heading; theta<=45+heading; theta+=0.5){
             Ray temp = new Ray(this.loc.copy(), theta);
             if(castRay(temp, currSquare, -1)) // make use of passing pointers --> doesn't have to return ray
                 playerVisibility.add(temp);

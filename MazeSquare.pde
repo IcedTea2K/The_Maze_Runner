@@ -63,10 +63,6 @@ public class MazeSquare{
     PVector[] getBoundaryVerticies(){ 
        PVector[] boundary = new PVector[4];
        
-       boundary[0] = new PVector(loc.x,loc.y);
-       boundary[1] = new PVector(width,0);
-       boundary[2] = new PVector(width,height);
-       boundary[3] = new PVector(0,height);
        for(int x = 0; x < 4; x++){
            boundary[x] = new PVector(loc.x + verticies[x].x*size, loc.y + verticies[x].y*size);
         }
@@ -97,7 +93,7 @@ public class MazeSquare{
     }
 
     void addSide(int side){
-        // 0 - left; 1 - top; 2 - right; 3 - bottom        
+        // 3 - left; 0 - top; 1 - right; 2 - bottom        
         isClosed[side] = true;
     }
 
