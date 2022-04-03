@@ -24,24 +24,25 @@ void draw() {
     drawMainScene();
 }
 
-void drawMainScene(){
+void drawMainScene(){ // draw the 3D scene
     rectMode(CENTER);
     noStroke();
-
+    randomSeed(100);
     pushMatrix();
     translate(width/2, 231);
     fill(0);
     rect(0, 0, mainSceneW, mainSceneH); // draw the background
     
-    float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size();
+    float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size(); 
     float max = 100;
-    for(int x = 0; x < mainPlayer.playerVisibility.size();x++){
+    for(int x = 0; x < mainPlayer.playerVisibility.size();x++){ // each slice corresponds to one ray
         float dist = mainPlayer.playerVisibility.get(x).distanceToIntersection();
-        
-        dist *= cos(radians(mainPlayer.playerVisibility.get(x).heading - mainPlayer.heading)); // fix the fish eye effects
-        if(dist>max) max = dist;
-        float brightness = map(dist, 0, max, 255, 0);
-        float sliceHeight = map(dist, 0, max, mainSceneH, 0);
+
+        // projection of ray onto the camera --> fix the fish eye effects    
+        dist *= cos(radians(mainPlayer.playerVisibility.get(x).heading - mainPlayer.heading)); 
+        if(dist>max) max = dist; // change the maximum distance to avoid random rendering bug
+        float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
+        float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
 
         noStroke();
         rectMode(CENTER);

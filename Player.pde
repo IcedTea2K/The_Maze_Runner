@@ -1,6 +1,6 @@
 public class Player {
     PVector loc = new PVector(0,0);
-    float speed = 1.5;
+    float speed = 0.5;
     int size = 6;
     float heading = 0;
 
