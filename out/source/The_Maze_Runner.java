@@ -17,7 +17,6 @@ import java.io.IOException;
 public class The_Maze_Runner extends PApplet {
 
 
-
 MazeMaker mainMaze;
 Player mainPlayer;
 
@@ -355,7 +354,7 @@ public class Player {
             if(loc.x + velocity.x > boundary[1] - size/2){ // collision boundary
                 if(currSquare.isClosed[1])
                     velocity.x = 0;
-                else if(loc.x + velocity.x > boundary[1]) currSquareIdx[0]++;
+                else if(loc.x + velocity.x > boundary[3]) currSquareIdx[0]++;
             }
         }
         if(input[1]){
@@ -363,7 +362,7 @@ public class Player {
             if(loc.y + velocity.y < boundary[0] + size/2){ // collision boundary
                 if(currSquare.isClosed[0])
                     velocity.y = 0;
-                else if(loc.y + velocity.y < boundary[0]) currSquareIdx[1]--;
+                else if(loc.y + velocity.y < boundary[2]) currSquareIdx[1]--;
             }
         }
         else if(input[3]){
@@ -371,14 +370,14 @@ public class Player {
             if(loc.y + velocity.y > boundary[2] - size/2){ // collision boundary
                 if(currSquare.isClosed[2])
                     velocity.y = 0;
-                else if(loc.y + velocity.y > boundary[2]) currSquareIdx[1]++;
+                else if(loc.y + velocity.y > boundary[0]) currSquareIdx[1]++;
             }
         }
         loc.add(velocity);
-        bufferZones[0] = (boundary[0] <= loc.y && loc.y <= boundary[0] + size/2); // buffer zone  
-        bufferZones[1] = (boundary[1] - size/2.f <= loc.x && loc.x <= boundary[1]); // buffer zone
-        bufferZones[2] = (boundary[2] - size/2.f <= loc.y && loc.y <= boundary[2]); // buffer zone  
-        bufferZones[3] = (boundary[3] <= loc.x && loc.x <= boundary[3] + size/2); // buffer zone 
+        bufferZones[0] = (boundary[0] <= loc.y && loc.y < boundary[0] + size/2); // buffer zone  
+        bufferZones[1] = (boundary[1] - size/2.f < loc.x && loc.x <= boundary[1]); // buffer zone
+        bufferZones[2] = (boundary[2] - size/2.f < loc.y && loc.y <= boundary[2]); // buffer zone  
+        bufferZones[3] = (boundary[3] <= loc.x && loc.x < boundary[3] + size/2); // buffer zone 
         println("bufferZones: "+Arrays.toString(bufferZones));
         println("Loc: " + loc + " square's loc: " + currSquare.getLocation() + " # of rays: " + playerVisibility.size());
     }
@@ -442,6 +441,7 @@ public class Player {
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1]+1, currSquare.getIdx()[0]), -1);
                 else if(checkBuffer() == 3)
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1], currSquare.getIdx()[0]-1), -1);
+                if(temp.intersection != null) playerVisibility.add(temp);
             }
         }
         if(playerVisibility.size() == 0) println("Heck Yeah");
