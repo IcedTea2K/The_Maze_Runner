@@ -36,29 +36,34 @@ public class Player {
             direction.setMag(speed);
         else if(input[3])
             direction.setMag(-speed);
-        else direction.setMag(0);
+        else {
+            direction.setMag(0);
+            return;
+        }
 
         float[] boundary = currSquare.getBoundary(); // actual boundary
         PVector futureLoc = PVector.add(direction, loc);
-        println("futureLoc: "+futureLoc);
-        println("boundary: "+Arrays.toString(boundary));
-        if(futureLoc.x < boundary[3] + size/2){ // collision boundary
+        
+        if(futureLoc.x <= boundary[3] + size/2){ // collision boundary
             if(currSquare.isClosed[3])
                 direction.setMag(0);
             else if(futureLoc.x < boundary[3]) currSquareIdx[0]--;
-        }else if(futureLoc.x > boundary[1] - size/2){ // collision boundary
+        }else if(futureLoc.x >= boundary[1] - size/2){ // collision boundary
             if(currSquare.isClosed[1])
                 direction.setMag(0);
             else if(futureLoc.x > boundary[1]) currSquareIdx[0]++;
-        }else if(futureLoc.y < boundary[0] + size/2){ // collision boundary
+        }
+        if(futureLoc.y <= boundary[0] + size/2){ // collision boundary
             if(currSquare.isClosed[0])
                 direction.setMag(0);
             else if(futureLoc.y < boundary[0]) currSquareIdx[1]--;
-        }else if(futureLoc.y > boundary[2] - size/2){ // collision boundary
+        }else if(futureLoc.y >= boundary[2] - size/2){ // collision boundary
             if(currSquare.isClosed[2])
                 direction.setMag(0);
             else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
-        } 
+        }
+        println("futureLoc: "+futureLoc);
+        println("boundary: "+Arrays.toString(boundary)); 
         println(Arrays.toString(currSquareIdx));
         loc.add(direction);
         track.add(currSquare);
