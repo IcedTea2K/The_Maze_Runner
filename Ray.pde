@@ -2,15 +2,12 @@ public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
     PVector intersection = null;
+    float heading;
     public Ray (PVector pos, float angle) {
         this.pos = pos;
         direction.x = cos(radians(angle));
         direction.y = sin(radians(angle));
-    }
-
-    void setDirection(PVector dirPos){
-        direction = dirPos.copy().sub(pos);
-        direction.normalize();
+        this.heading = angle;
     }
 
     boolean intersect(PVector start, PVector end){
@@ -43,7 +40,7 @@ public class Ray{
         return false;
     }
 
-    void distanceToIntersection(){
+    float distanceToIntersection(){
         return dist(pos.x, pos.y, intersection.x, intersection.y);
     }
 

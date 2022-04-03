@@ -22,10 +22,11 @@ Player mainPlayer;
 
 Ray test;
 ArrayList<Ray> allRays = new ArrayList<Ray>();
-PVector[][] boundary = new PVector[10][2];
-PVector[] outerBoundary = new PVector[4];
 
-boolean[] direction = new boolean[4];
+float mainSceneW = 810; // 3D scene's width
+float mainSceneH = 420; // 3D scene's height
+
+boolean[] direction = new boolean[4]; // users' input
 
 public void setup() {
     
@@ -37,6 +38,34 @@ public void draw() {
     background(100);    
     mainMaze.display();
     mainPlayer.action(direction);
+
+    drawMainScene();
+}
+
+public void drawMainScene(){
+    rectMode(CENTER);
+    noStroke();
+
+    pushMatrix();
+    translate(width/2, 231);
+    fill(0);
+    rect(0, 0, mainSceneW, mainSceneH); // draw the background
+    
+    float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size();
+    for(int x = 0; x < mainPlayer.playerVisibility.size();x++){
+        float dist = mainPlayer.playerVisibility.get(x).distanceToIntersection();
+        
+        dist *= cos(radians(mainPlayer.playerVisibility.get(x).heading - mainPlayer.heading)); // fix the fish eye effects
+        float brightness = map(dist, 0, 100, 255, 0);
+        float sliceHeight = map(dist, 0, 100, mainSceneH, 0);
+
+        noStroke();
+        rectMode(CENTER);
+        fill(brightness);
+        rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
+    }
+    popMatrix();
+    
 }
 
 public void setDirection (int k, boolean isOn) { // record pressed keys (direction)
@@ -75,11 +104,15 @@ public class MazeMaker { // create the maze
     ArrayList<MazeSquare> solution = new ArrayList<MazeSquare>();
     Stack<MazeSquare> visitedSquareStack = new Stack<MazeSquare>();
 
+    final float mazeWidth;
+    final float mazeHeight;
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
         loc = new PVector(xPos, yPos);
         size = new PVector(mazeWidth, mazeHeight);
         rows = PApplet.parseInt(mazeHeight/squareSize); // 10 = square's size
         columns = PApplet.parseInt(mazeWidth/squareSize);
+        this.mazeWidth = mazeWidth;
+        this.mazeHeight = mazeHeight;
         createGrid();
         makeMaze();
     }
@@ -311,7 +344,6 @@ public class MazeSquare{
 }
 public class Player {
     PVector loc = new PVector(0,0);
-    PVector velocity = new PVector(0,0);
     float speed = 1.5f;
     int size = 6;
     float heading = 0;
@@ -332,8 +364,6 @@ public class Player {
     }
 
     public void move(boolean[] input){
-        velocity.x = 0; // reset velocity before taking in inputs
-        velocity.y = 0;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
         PVector direction;
@@ -351,33 +381,30 @@ public class Player {
             direction.setMag(0);
         }
 
-        float[] boundary = currSquare.getBoundary(); // actual boundary
+        float[] boundary = currSquare.getBoundary(); 
         PVector futureLoc = PVector.add(direction, loc);
         
         if(futureLoc.x <= boundary[3] + size/2){ // collision boundary
             if(currSquare.isClosed[3])
                 direction.setMag(0);
-            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--;
+            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--; // actual boundary
         }else if(futureLoc.x >= boundary[1] - size/2){ // collision boundary
             if(currSquare.isClosed[1])
                 direction.setMag(0);
-            else if(futureLoc.x > boundary[1]) currSquareIdx[0]++;
+            else if(futureLoc.x > boundary[1]) currSquareIdx[0]++; // actual boundary
         }
         if(futureLoc.y <= boundary[0] + size/2){ // collision boundary
             if(currSquare.isClosed[0])
                 direction.setMag(0);
-            else if(futureLoc.y < boundary[0]) currSquareIdx[1]--;
+            else if(futureLoc.y < boundary[0]) currSquareIdx[1]--; // actual boundary
         }else if(futureLoc.y >= boundary[2] - size/2){ // collision boundary
             if(currSquare.isClosed[2])
                 direction.setMag(0);
-            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++;
+            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++; // actual boundary
         }
-        // println("futureLoc: "+futureLoc);
-        // println("boundary: "+Arrays.toString(boundary)); 
-        println("playerVisibility.size(): "+playerVisibility.size());
-        println(Arrays.toString(bufferZones));
-        loc.add(direction);
-        track.add(currSquare);
+        
+        loc.add(direction); // actually move after all the checks
+        track.add(currSquare); // record the path
         
         bufferZones[0] = (boundary[0] - size/2.f <= loc.y && loc.y < boundary[0] + size/2.f); // buffer zone  
         bufferZones[1] = (boundary[1] - size/2.f < loc.x && loc.x <= boundary[1] + size/2.f); // buffer zone
@@ -386,7 +413,7 @@ public class Player {
     }
 
     public int checkBuffer(){
-        for(int x = 0; x < 4; x++){
+        for(int x = 0; x < 4; x++){ // return the index of the activated buffer zone
             if(bufferZones[x]) return x;
         }  
         return -1;
@@ -433,7 +460,7 @@ public class Player {
 
         for(float theta = -45 + heading; theta<=45+heading; theta+=0.5f){
             Ray temp = new Ray(this.loc.copy(), theta);
-            if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){
+            if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){ // if in buffer zone, must check the next square as well
                 if(checkBuffer() == 0)
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1]-1, currSquare.getIdx()[0]), -1);
                 else if(checkBuffer() == 1)
@@ -487,16 +514,18 @@ public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
     PVector intersection = null;
+    float heading;
     public Ray (PVector pos, float angle) {
         this.pos = pos;
         direction.x = cos(radians(angle));
         direction.y = sin(radians(angle));
+        this.heading = angle;
     }
 
-    public void setDirection(PVector dirPos){
-        direction = dirPos.copy().sub(pos);
-        direction.normalize();
-    }
+    // void setDirection(PVector dirPos){
+    //     direction = dirPos.copy().sub(pos);
+    //     direction.normalize();
+    // }
 
     public boolean intersect(PVector start, PVector end){
         // L1 = boundary; L2 = ray
@@ -526,6 +555,10 @@ public class Ray{
             return true;
         }
         return false;
+    }
+
+    public float distanceToIntersection(){
+        return dist(pos.x, pos.y, intersection.x, intersection.y);
     }
 
     public void connectIntersect(){

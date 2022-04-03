@@ -9,11 +9,15 @@ public class MazeMaker { // create the maze
     ArrayList<MazeSquare> solution = new ArrayList<MazeSquare>();
     Stack<MazeSquare> visitedSquareStack = new Stack<MazeSquare>();
 
+    final float mazeWidth;
+    final float mazeHeight;
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
         loc = new PVector(xPos, yPos);
         size = new PVector(mazeWidth, mazeHeight);
         rows = int(mazeHeight/squareSize); // 10 = square's size
         columns = int(mazeWidth/squareSize);
+        this.mazeWidth = mazeWidth;
+        this.mazeHeight = mazeHeight;
         createGrid();
         makeMaze();
     }
