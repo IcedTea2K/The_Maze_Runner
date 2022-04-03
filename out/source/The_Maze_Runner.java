@@ -220,10 +220,6 @@ public class MazeSquare{
         this.idx = idx;
     }
 
-    // public int compareTo(MazeSquare s){
-    //     return int(PVector.sub(this.loc, new PVector(0,0)).magSq());
-    // }
-
     public void display(){
         pushMatrix();
         translate(loc.x, loc.y); // move to desired location
@@ -384,8 +380,6 @@ public class Player {
         bufferZones[1] = (boundary[1] - size/2.f < loc.x && loc.x <= boundary[1]); // buffer zone
         bufferZones[2] = (boundary[2] - size/2.f < loc.y && loc.y <= boundary[2]); // buffer zone  
         bufferZones[3] = (boundary[3] <= loc.x && loc.x < boundary[3] + size/2); // buffer zone 
-        println("bufferZones: "+Arrays.toString(bufferZones));
-        println("Loc: " + loc + " square's loc: " + currSquare.getLocation() + " # of rays: " + playerVisibility.size());
     }
 
     public int checkBuffer(){
@@ -450,7 +444,7 @@ public class Player {
                 if(temp.intersection != null) playerVisibility.add(temp);
             }
         }
-        if(playerVisibility.size() == 0) println("Heck Yeah");
+        
         for(Ray r: playerVisibility)
             r.connectIntersect(); // display the rays
     }

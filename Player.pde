@@ -65,8 +65,6 @@ public class Player {
         bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x <= boundary[1]); // buffer zone
         bufferZones[2] = (boundary[2] - size/2. < loc.y && loc.y <= boundary[2]); // buffer zone  
         bufferZones[3] = (boundary[3] <= loc.x && loc.x < boundary[3] + size/2); // buffer zone 
-        println("bufferZones: "+Arrays.toString(bufferZones));
-        println("Loc: " + loc + " square's loc: " + currSquare.getLocation() + " # of rays: " + playerVisibility.size());
     }
 
     int checkBuffer(){
@@ -112,7 +110,7 @@ public class Player {
         return true; 
     }
 
-    void detectWalls(){
+    void detectWalls(){ // gives the player's visibility
         playerVisibility.clear(); // reset everytime
 
         for(float theta = 0; theta<=360; theta+=0.5){
@@ -131,7 +129,7 @@ public class Player {
                 if(temp.intersection != null) playerVisibility.add(temp);
             }
         }
-        if(playerVisibility.size() == 0) println("Heck Yeah");
+        
         for(Ray r: playerVisibility)
             r.connectIntersect(); // display the rays
     }
@@ -139,11 +137,11 @@ public class Player {
     void display(){
         pushMatrix();
         translate(maze.getLoc().x, maze.getLoc().y);
-        Iterator<MazeSquare> x = track.iterator();
+        Iterator<MazeSquare> x = track.iterator(); // keep track of player's path
         while(x.hasNext()){
-            x.next().display();
+            x.next().display(); // only displays squares that player's have been through
         }
-        println(track.size());
+        
         ellipseMode(CENTER);
         noStroke();
         fill(0,255,0);
