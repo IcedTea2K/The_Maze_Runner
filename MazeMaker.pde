@@ -71,7 +71,7 @@ public class MazeMaker { // create the maze
             visitedSquareStack.push(availableNeighbor.get(tempRandomNeighborIdx));      
             availableNeighbor.clear(); // reset
         }
-        println(solution.size());
+
         allSquares.get(rows-1).get(columns-1).removeSide(2);
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }

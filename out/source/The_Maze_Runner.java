@@ -39,7 +39,7 @@ public void setup() {
 
     clock = new StopWatch();
     clock.start();
-    
+
     font = createFont("MunaBold", 16, true);
     textFont(font);
 }
@@ -74,8 +74,11 @@ public void drawMainScene(){ // draw the 3D scene
         if(dist>max) max = dist; // change the maximum distance to avoid random rendering bug
         float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
         float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
-
-        fill(255,0, 0, brightness);
+        if(mainPlayer.playerVisibility.get(x).facingEntry)
+          fill(0,255,0,brightness);
+        else if(mainPlayer.playerVisibility.get(x).facingExit)
+          fill(0,0,255,brightness); 
+        else fill(255,0, 0, brightness);
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();
@@ -180,7 +183,7 @@ public class MazeMaker { // create the maze
             visitedSquareStack.push(availableNeighbor.get(tempRandomNeighborIdx));      
             availableNeighbor.clear(); // reset
         }
-        println(solution.size());
+
         allSquares.get(rows-1).get(columns-1).removeSide(2);
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }
@@ -529,6 +532,9 @@ public class Ray{
     PVector direction = new PVector(0,0);
     PVector intersection = null;
     float heading;
+
+    boolean facingEntry = false;
+    boolean facingExit = false;
     public Ray (PVector pos, float angle) {
         this.pos = pos;
         direction.x = cos(radians(angle));
@@ -561,6 +567,12 @@ public class Ray{
                 (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
             );
             intersection = temp;
+            if(intersection.x >= 0 && intersection.x<=15
+                && intersection.y == 0)
+                facingEntry = true;
+            else if(intersection.x >= 435 && intersection.x <= 450
+                && intersection.y == 240)
+                facingExit = true;
             return true;
         }
         return false;
@@ -627,9 +639,7 @@ public class StopWatch {
         rect(105, 585, 62, 30);
         
         fill(0,255,0);
-        text(this.timeInText(), 75, 590);
-        
-        
+        text(this.timeInText(), 75, 590);   
     }
 }
   public void settings() {  size(1080, 720); }

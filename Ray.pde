@@ -3,6 +3,9 @@ public class Ray{
     PVector direction = new PVector(0,0);
     PVector intersection = null;
     float heading;
+
+    boolean facingEntry = false;
+    boolean facingExit = false;
     public Ray (PVector pos, float angle) {
         this.pos = pos;
         direction.x = cos(radians(angle));
@@ -35,6 +38,12 @@ public class Ray{
                 (x1 + t*(x2-x1)), (y1 + t*(y2-y1))
             );
             intersection = temp;
+            if(intersection.x >= 0 && intersection.x<=15
+                && intersection.y == 0)
+                facingEntry = true;
+            else if(intersection.x >= 435 && intersection.x <= 450
+                && intersection.y == 240)
+                facingExit = true;
             return true;
         }
         return false;

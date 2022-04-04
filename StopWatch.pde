@@ -50,8 +50,6 @@ public class StopWatch {
         rect(105, 585, 62, 30);
         
         fill(0,255,0);
-        text(this.timeInText(), 75, 590);
-        
-        
+        text(this.timeInText(), 75, 590);   
     }
 }

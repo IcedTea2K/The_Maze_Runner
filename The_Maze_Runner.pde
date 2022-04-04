@@ -20,7 +20,7 @@ void setup() {
 
     clock = new StopWatch();
     clock.start();
-    
+
     font = createFont("MunaBold", 16, true);
     textFont(font);
 }
@@ -55,8 +55,11 @@ void drawMainScene(){ // draw the 3D scene
         if(dist>max) max = dist; // change the maximum distance to avoid random rendering bug
         float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
         float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
-
-        fill(255,0, 0, brightness);
+        if(mainPlayer.playerVisibility.get(x).facingEntry)
+          fill(0,255,0,brightness);
+        else if(mainPlayer.playerVisibility.get(x).facingExit)
+          fill(0,0,255,brightness); 
+        else fill(255,0, 0, brightness);
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();
