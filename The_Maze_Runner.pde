@@ -10,10 +10,17 @@ float mainSceneH = 420; // 3D scene's height
 
 boolean[] direction = new boolean[4]; // users' input
 
+PFont font;
+StopWatch clock;
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
+
+    clock = new StopWatch();
+    clock.start();
+    font = createFont("MunaBold", 16, true);
+    textFont(font);
 }
 
 void draw() {
@@ -22,6 +29,16 @@ void draw() {
     mainPlayer.action(direction);
 
     drawMainScene();
+
+    text(clock.timeInText(), 75, 590);
+    if(keyPressed){
+      if(key == 'a'){
+        clock.start();
+      }else if(key == 's'){
+        clock.stop();
+      }
+    }
+    // noLoop();
 }
 
 void drawMainScene(){ // draw the 3D scene

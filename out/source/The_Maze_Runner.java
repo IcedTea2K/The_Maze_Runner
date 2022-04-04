@@ -28,10 +28,17 @@ float mainSceneH = 420; // 3D scene's height
 
 boolean[] direction = new boolean[4]; // users' input
 
+PFont font;
+StopWatch clock;
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
+
+    clock = new StopWatch();
+    clock.start();
+    font = createFont("MunaBold", 16, true);
+    textFont(font);
 }
 
 public void draw() {
@@ -40,6 +47,16 @@ public void draw() {
     mainPlayer.action(direction);
 
     drawMainScene();
+
+    text(clock.timeInText(), 75, 590);
+    if(keyPressed){
+      if(key == 'a'){
+        clock.start();
+      }else if(key == 's'){
+        clock.stop();
+      }
+    }
+    // noLoop();
 }
 
 public void drawMainScene(){ // draw the 3D scene
@@ -560,6 +577,48 @@ public class Ray{
     public void connectIntersect(){
         stroke(255);  
         line(pos.x, pos.y, intersection.x , intersection.y);
+    }
+}
+public class StopWatch {
+    float startTime = 0;
+    float endTime = 0;
+    boolean running = false;
+
+    public void start(){
+        if(running) return;
+        startTime = millis();
+        running = true;
+    }
+
+    public void stop(){
+        if(!running) return;
+        endTime = millis();
+        running = false;
+    }
+
+    public float getEllapsedTime(){
+        if(running) return millis()-startTime;
+        return endTime - startTime;
+    }
+
+    public float millisecond(){
+        return getEllapsedTime() % 100; // round to 2 decimals
+    }
+
+    public float second(){
+        return round((getEllapsedTime()/1000)) % 60;
+    }
+
+    public float minute(){
+        return round((getEllapsedTime()/ (1000*60))) % 60;
+    }
+
+    public String timeInText(){
+        int s = PApplet.parseInt(this.second());
+        int m = PApplet.parseInt(this.minute());
+        int ms = PApplet.parseInt(this.millisecond());
+
+        return m + ":" + s + "." + ms;
     }
 }
   public void settings() {  size(1080, 720); }
