@@ -1,4 +1,5 @@
 import java.util.*;
+import java.text.DecimalFormat;
 MazeMaker mainMaze;
 Player mainPlayer;
 
@@ -19,6 +20,7 @@ void setup() {
 
     clock = new StopWatch();
     clock.start();
+    
     font = createFont("MunaBold", 16, true);
     textFont(font);
 }
@@ -28,17 +30,10 @@ void draw() {
     mainMaze.display();
     mainPlayer.action(direction);
 
+    clock.display();
+
     drawMainScene();
 
-    text(clock.timeInText(), 75, 590);
-    if(keyPressed){
-      if(key == 'a'){
-        clock.start();
-      }else if(key == 's'){
-        clock.stop();
-      }
-    }
-    // noLoop();
 }
 
 void drawMainScene(){ // draw the 3D scene
@@ -61,7 +56,7 @@ void drawMainScene(){ // draw the 3D scene
         float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
         float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
 
-        fill(brightness);
+        fill(255,0, 0, brightness);
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();

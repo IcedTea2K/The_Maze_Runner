@@ -4,6 +4,7 @@ import processing.event.*;
 import processing.opengl.*; 
 
 import java.util.*; 
+import java.text.DecimalFormat; 
 
 import java.util.HashMap; 
 import java.util.ArrayList; 
@@ -15,6 +16,7 @@ import java.io.OutputStream;
 import java.io.IOException; 
 
 public class The_Maze_Runner extends PApplet {
+
 
 
 MazeMaker mainMaze;
@@ -46,17 +48,10 @@ public void draw() {
     mainMaze.display();
     mainPlayer.action(direction);
 
+    clock.display();
+
     drawMainScene();
 
-    text(clock.timeInText(), 75, 590);
-    if(keyPressed){
-      if(key == 'a'){
-        clock.start();
-      }else if(key == 's'){
-        clock.stop();
-      }
-    }
-    // noLoop();
 }
 
 public void drawMainScene(){ // draw the 3D scene
@@ -79,7 +74,7 @@ public void drawMainScene(){ // draw the 3D scene
         float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
         float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
 
-        fill(brightness);
+        fill(255,0, 0, brightness);
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();
@@ -614,11 +609,18 @@ public class StopWatch {
     }
 
     public String timeInText(){
+        fill(0);
         int s = PApplet.parseInt(this.second());
         int m = PApplet.parseInt(this.minute());
         int ms = PApplet.parseInt(this.millisecond());
 
-        return m + ":" + s + "." + ms;
+        DecimalFormat df = new DecimalFormat("00");
+        
+        return df.format(m) + ":" + df.format(s) + "." + ms;
+    }
+
+    public void display(){
+        text(this.timeInText(), 75, 590);
     }
 }
   public void settings() {  size(1080, 720); }

@@ -37,6 +37,12 @@ public class StopWatch {
         int m = int(this.minute());
         int ms = int(this.millisecond());
 
-        return m + ":" + s + "." + ms;
+        DecimalFormat df = new DecimalFormat("00");
+        
+        return df.format(m) + ":" + df.format(s) + "." + ms;
+    }
+
+    void display(){
+        text(this.timeInText(), 75, 590);
     }
 }
