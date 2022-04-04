@@ -62,8 +62,6 @@ public void drawMainScene(){ // draw the 3D scene
         float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
         float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
 
-        noStroke();
-        rectMode(CENTER);
         fill(brightness);
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
