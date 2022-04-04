@@ -52,7 +52,6 @@ public void draw() {
     clock.display();
 
     drawMainScene();
-
 }
 
 public void drawMainScene(){ // draw the 3D scene
@@ -82,7 +81,6 @@ public void drawMainScene(){ // draw the 3D scene
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();
-    
 }
 
 public void setDirection (int k, boolean isOn) { // record pressed keys (direction)
@@ -130,14 +128,11 @@ public class MazeMaker { // create the maze
         columns = PApplet.parseInt(mazeWidth/squareSize);
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
+        createGrid();
         makeMaze();
     }
 
     public void makeMaze(){
-        allSquares.clear(); // reset the maze + solution
-        solution.clear();
-        createGrid();
-
         visitedSquareStack.push(allSquares.get(0).get(0)); // inital cell is always the first square on top left
         allSquares.get(0).get(0).visit();
         allSquares.get(0).get(0).removeSide(0);
@@ -191,6 +186,13 @@ public class MazeMaker { // create the maze
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }
 
+    public void reset(){
+        solution.clear();
+        allSquares.clear();
+        createGrid();
+        makeMaze();
+    }
+
     public int[] checkNeighbor(MazeSquare square){
         int[] possibleNeighbors = new int[4];
         for(int x = 0; x<4;x++) possibleNeighbors[x] = -1;
@@ -214,7 +216,6 @@ public class MazeMaker { // create the maze
             allSquares.add(new ArrayList<MazeSquare>());
             for(int x = 0; x < columns; x++){    
                 allSquares.get(y).add(new MazeSquare(x*squareSize, y*squareSize, squareSize, new int[] {x,y}));
-                       
             }
         }
     }
@@ -420,11 +421,15 @@ public class Player {
         }else if(futureLoc.y >= boundary[2] - size/2){ // collision boundary
             if(currSquare.isClosed[2])
                 direction.setMag(0);
-            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++; // actual boundary
+            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++; // actual boundary    
         }
         
         loc.add(direction); // actually move after all the checks
-        track.add(currSquare); // record the path
+        if(currSquareIdx[1] == maze.rows) { // reset when the end is reached
+                track.clear();
+                maze.reset(); 
+        }else track.add(currSquare); // record the path
+        
         
         bufferZones[0] = (boundary[0] - size/2.f <= loc.y && loc.y < boundary[0] + size/2.f); // buffer zone  
         bufferZones[1] = (boundary[1] - size/2.f < loc.x && loc.x <= boundary[1] + size/2.f); // buffer zone

@@ -56,11 +56,15 @@ public class Player {
         }else if(futureLoc.y >= boundary[2] - size/2){ // collision boundary
             if(currSquare.isClosed[2])
                 direction.setMag(0);
-            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++; // actual boundary
+            else if(futureLoc.y > boundary[2]) currSquareIdx[1]++; // actual boundary    
         }
         
         loc.add(direction); // actually move after all the checks
-        track.add(currSquare); // record the path
+        if(currSquareIdx[1] == maze.rows) { // reset when the end is reached
+                track.clear();
+                maze.reset(); 
+        }else track.add(currSquare); // record the path
+        
         
         bufferZones[0] = (boundary[0] - size/2. <= loc.y && loc.y < boundary[0] + size/2.); // buffer zone  
         bufferZones[1] = (boundary[1] - size/2. < loc.x && loc.x <= boundary[1] + size/2.); // buffer zone

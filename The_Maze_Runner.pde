@@ -33,7 +33,6 @@ void draw() {
     clock.display();
 
     drawMainScene();
-
 }
 
 void drawMainScene(){ // draw the 3D scene
@@ -63,7 +62,6 @@ void drawMainScene(){ // draw the 3D scene
         rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();
-    
 }
 
 void setDirection (int k, boolean isOn) { // record pressed keys (direction)

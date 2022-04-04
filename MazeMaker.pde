@@ -18,14 +18,11 @@ public class MazeMaker { // create the maze
         columns = int(mazeWidth/squareSize);
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
+        createGrid();
         makeMaze();
     }
 
     void makeMaze(){
-        allSquares.clear(); // reset the maze + solution
-        solution.clear();
-        createGrid();
-
         visitedSquareStack.push(allSquares.get(0).get(0)); // inital cell is always the first square on top left
         allSquares.get(0).get(0).visit();
         allSquares.get(0).get(0).removeSide(0);
@@ -79,6 +76,13 @@ public class MazeMaker { // create the maze
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }
 
+    void reset(){ // delete all the squares + create a new maze
+        solution.clear();
+        allSquares.clear();
+        createGrid();
+        makeMaze();
+    }
+
     int[] checkNeighbor(MazeSquare square){
         int[] possibleNeighbors = new int[4];
         for(int x = 0; x<4;x++) possibleNeighbors[x] = -1;
@@ -102,7 +106,6 @@ public class MazeMaker { // create the maze
             allSquares.add(new ArrayList<MazeSquare>());
             for(int x = 0; x < columns; x++){    
                 allSquares.get(y).add(new MazeSquare(x*squareSize, y*squareSize, squareSize, new int[] {x,y}));
-                       
             }
         }
     }
