@@ -43,6 +43,15 @@ public class StopWatch {
     }
 
     void display(){
+        textFont(font, 20);
+        noStroke();
+        rectMode(CENTER);
+        fill(0);
+        rect(105, 585, 62, 30);
+        
+        fill(0,255,0);
         text(this.timeInText(), 75, 590);
+        
+        
     }
 }

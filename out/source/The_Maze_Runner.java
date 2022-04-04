@@ -39,6 +39,7 @@ public void setup() {
 
     clock = new StopWatch();
     clock.start();
+    
     font = createFont("MunaBold", 16, true);
     textFont(font);
 }
@@ -609,7 +610,6 @@ public class StopWatch {
     }
 
     public String timeInText(){
-        fill(0);
         int s = PApplet.parseInt(this.second());
         int m = PApplet.parseInt(this.minute());
         int ms = PApplet.parseInt(this.millisecond());
@@ -620,7 +620,16 @@ public class StopWatch {
     }
 
     public void display(){
+        textFont(font, 20);
+        noStroke();
+        rectMode(CENTER);
+        fill(0);
+        rect(105, 585, 62, 30);
+        
+        fill(0,255,0);
         text(this.timeInText(), 75, 590);
+        
+        
     }
 }
   public void settings() {  size(1080, 720); }
