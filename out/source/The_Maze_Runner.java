@@ -60,9 +60,10 @@ public void drawMainScene(){ // draw the 3D scene
     
     pushMatrix();
     translate(width/2, 231);
-    fill(0);
+    fill(0xff039be5);
     rect(0, 0, mainSceneW, mainSceneH); // draw the background
     
+    // rectMode(CORNER);
     float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size(); 
     float max = 100;
     for(int x = 0; x < mainPlayer.playerVisibility.size();x++){ // each slice corresponds to one ray
@@ -77,8 +78,8 @@ public void drawMainScene(){ // draw the 3D scene
           fill(0,255,0,brightness);
         else if(mainPlayer.playerVisibility.get(x).facingExit)
           fill(0,0,255,brightness); 
-        else fill(255,0, 0, brightness);
-        rect(x*sliceWidth - mainSceneW/2, 0, sliceWidth, sliceHeight);
+        else fill(0xffC07F80, brightness);
+        rect(x*sliceWidth - mainSceneW/2 + sliceWidth/2, 0, sliceWidth, sliceHeight);
     }
     popMatrix();
 }
@@ -186,7 +187,7 @@ public class MazeMaker { // create the maze
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }
 
-    public void reset(){
+    public void reset(){ // delete all the squares + create a new maze
         solution.clear();
         allSquares.clear();
         createGrid();
