@@ -18,11 +18,14 @@ public class MazeMaker { // create the maze
         columns = int(mazeWidth/squareSize);
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
-        createGrid();
         makeMaze();
     }
 
     void makeMaze(){
+        allSquares.clear(); // reset the maze + solution
+        solution.clear();
+        createGrid();
+
         visitedSquareStack.push(allSquares.get(0).get(0)); // inital cell is always the first square on top left
         allSquares.get(0).get(0).visit();
         allSquares.get(0).get(0).removeSide(0);

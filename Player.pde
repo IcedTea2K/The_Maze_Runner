@@ -151,10 +151,12 @@ public class Player {
 
             currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
+            maze.makeMaze(); // restart the maze
             loc.y = maze.getSquare(0,0).getLocation().y;
             loc.x -= currSquare.getLocation().x;
-
-            currSquareIdx = maze.getSquare(0,0).getIdx();
+            
+            currSquareIdx[0] = 0;
+            currSquareIdx[1] = 0;
         }
         detectWalls();
         circle(loc.x, loc.y, size);

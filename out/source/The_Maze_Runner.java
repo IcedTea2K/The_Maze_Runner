@@ -58,7 +58,7 @@ public void draw() {
 public void drawMainScene(){ // draw the 3D scene
     rectMode(CENTER);
     noStroke();
-    randomSeed(100);
+    
     pushMatrix();
     translate(width/2, 231);
     fill(0);
@@ -130,11 +130,14 @@ public class MazeMaker { // create the maze
         columns = PApplet.parseInt(mazeWidth/squareSize);
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
-        createGrid();
         makeMaze();
     }
 
     public void makeMaze(){
+        allSquares.clear(); // reset the maze + solution
+        solution.clear();
+        createGrid();
+
         visitedSquareStack.push(allSquares.get(0).get(0)); // inital cell is always the first square on top left
         allSquares.get(0).get(0).visit();
         allSquares.get(0).get(0).removeSide(0);
@@ -512,10 +515,12 @@ public class Player {
 
             currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
+            maze.makeMaze(); // restart the maze
             loc.y = maze.getSquare(0,0).getLocation().y;
             loc.x -= currSquare.getLocation().x;
-
-            currSquareIdx = maze.getSquare(0,0).getIdx();
+            
+            currSquareIdx[0] = 0;
+            currSquareIdx[1] = 0;
         }
         detectWalls();
         circle(loc.x, loc.y, size);

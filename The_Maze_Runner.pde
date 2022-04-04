@@ -39,7 +39,7 @@ void draw() {
 void drawMainScene(){ // draw the 3D scene
     rectMode(CENTER);
     noStroke();
-    randomSeed(100);
+    
     pushMatrix();
     translate(width/2, 231);
     fill(0);
