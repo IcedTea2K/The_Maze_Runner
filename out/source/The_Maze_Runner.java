@@ -139,16 +139,23 @@ public class Button {
         buttonWidth = textWidth(message);
     }
 
+    public boolean overBox(){
+        return(mouseX > (pos.x - buttonWidth*(widthScalar-1)/2) && mouseX < pos.x - buttonWidth*(widthScalar-1)/2 + buttonWidth*widthScalar
+            && mouseY < pos.y - buttonHeight*(heightScalar-2)/2 && mouseY > pos.y - buttonHeight*(heightScalar-2)/2 + buttonHeight * heightScalar);
+    }
+
     public void display(){
         calculateTextBox();
         rectMode(CORNER);
 
         noStroke();
         fill(buttonColor); // drarw plain button
+        // some offset to write the text in the middle of the button
         rect(pos.x - buttonWidth*(widthScalar-1)/2, pos.y - buttonHeight*(heightScalar-2)/2, buttonWidth * widthScalar, buttonHeight * heightScalar);
 
         fill(txtColor); // write the text onto the button
         text(message, pos.x, pos.y);
+        println(overBox());
     }
 }
 public class MazeMaker { // create the maze
