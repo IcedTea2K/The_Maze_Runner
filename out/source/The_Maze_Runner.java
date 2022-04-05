@@ -22,7 +22,6 @@ public class The_Maze_Runner extends PApplet {
 MazeMaker mainMaze;
 Player mainPlayer;
 
-Ray test;
 ArrayList<Ray> allRays = new ArrayList<Ray>();
 
 float mainSceneW = 810; // 3D scene's width
@@ -32,6 +31,7 @@ boolean[] direction = new boolean[4]; // users' input
 
 PFont font;
 StopWatch clock;
+Button test;
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
@@ -42,6 +42,7 @@ public void setup() {
 
     font = createFont("MunaBold", 16, true);
     textFont(font);
+    
 }
 
 public void draw() {
@@ -52,6 +53,9 @@ public void draw() {
     clock.display();
 
     drawMainScene();
+    test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
+    test.display();
+    println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
 
 public void drawMainScene(){ // draw the 3D scene
@@ -111,14 +115,40 @@ public void keyReleased() {
 }
 public class Button {
     final String message;
+    private float buttonHeight;
+    private float buttonWidth;
+    private int buttonColor;
+    private int txtColor;
+    private float widthScalar = 1.5f;
+    private float heightScalar = 3;
     PVector pos;
     float fontSize;
-    int scale;
-    public Button (String message, PVector pos, float fontSize, int scale) {
+    
+    public Button (String message, PVector pos, float fontSize, int buttonColor, int txtColor) {
         this.message = message;
         this.pos = pos;
         this.fontSize = fontSize;
-        this.scale = scale;
+        this.buttonColor = buttonColor;
+        this.txtColor = txtColor;
+    }
+
+    public void calculateTextBox(){
+        textSize(fontSize);
+        buttonHeight = (textDescent() - textAscent());
+        println(buttonHeight);
+        buttonWidth = textWidth(message);
+    }
+
+    public void display(){
+        calculateTextBox();
+        rectMode(CORNER);
+
+        noStroke();
+        fill(buttonColor); // drarw plain button
+        rect(pos.x - buttonWidth*(widthScalar-1)/2, pos.y - buttonHeight*(heightScalar-2)/2, buttonWidth * widthScalar, buttonHeight * heightScalar);
+
+        fill(txtColor); // write the text onto the button
+        text(message, pos.x, pos.y);
     }
 }
 public class MazeMaker { // create the maze

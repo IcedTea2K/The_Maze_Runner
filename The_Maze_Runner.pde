@@ -3,7 +3,6 @@ import java.text.DecimalFormat;
 MazeMaker mainMaze;
 Player mainPlayer;
 
-Ray test;
 ArrayList<Ray> allRays = new ArrayList<Ray>();
 
 float mainSceneW = 810; // 3D scene's width
@@ -13,6 +12,7 @@ boolean[] direction = new boolean[4]; // users' input
 
 PFont font;
 StopWatch clock;
+Button test;
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
@@ -23,6 +23,7 @@ void setup() {
 
     font = createFont("MunaBold", 16, true);
     textFont(font);
+    
 }
 
 void draw() {
@@ -33,6 +34,9 @@ void draw() {
     clock.display();
 
     drawMainScene();
+    test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
+    test.display();
+    println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
 
 void drawMainScene(){ // draw the 3D scene
