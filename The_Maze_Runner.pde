@@ -25,6 +25,7 @@ void setup() {
 
     allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
     allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
+    allButtons.add(new Button("Back", new PVector(width/2, height*7/10), 30, false, color(0,0,0), color(255,255,255))); 
     font = createFont("MunaBold", 16, true);
     textFont(font);   
 }
@@ -40,7 +41,6 @@ void draw() {
 
     clock.display();
     
-    // test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
     displayButtons();
 }
 
@@ -111,10 +111,49 @@ void displayButtons(){
   }
 }
 
+void startGame(){
+  gameStatus = 1;
+  println(allButtons.size());
+  allButtons.get(0).deactivate();
+  allButtons.get(1).deactivate();
+}
+
+void howToPlay(){
+  allButtons.get(0).deactivate();
+  allButtons.get(1).deactivate();
+  allButtons.get(2).activate();
+}
+
+void returnToIntro(){
+  allButtons.get(2).deactivate();
+  allButtons.get(0).activate();
+  allButtons.get(1).activate();  
+}
+
+void buttonEvent(int idx){
+  switch(idx){
+    case 0:
+      startGame();
+      break;
+    case 1:
+      howToPlay();
+      break;
+    case 2:
+      returnToIntro();
+      break;
+    case 3:
+      break;
+    case 4:
+      break;
+  }
+}
+
 void mouseClicked(){
   for(int x = 0; x < allButtons.size(); x++){
     if(allButtons.get(x).isActive && allButtons.get(x).overBox()){
-      println("clicked");
+      buttonEvent(x);
+      println(x);
+      break;
     }
   }
 }
