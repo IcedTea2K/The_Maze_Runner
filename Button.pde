@@ -10,18 +10,18 @@ public class Button {
     PVector pos;
     float fontSize;
     
-    public Button (String message, PVector pos, float fontSize, color buttonColor, color txtColor) {
+    public Button (String message, PVector pos, float fontSize, boolean isActive, color buttonColor, color txtColor) {
         this.message = message;
         this.pos = pos;
         this.fontSize = fontSize;
         this.buttonColor = buttonColor;
         this.txtColor = txtColor;
+        this.isActive = isActive;
     }
 
     void calculateTextBox(){
         textSize(fontSize);
         buttonHeight = (textDescent() - textAscent());
-        println(buttonHeight);
         buttonWidth = textWidth(message);
     }
 
@@ -41,7 +41,6 @@ public class Button {
 
         fill(txtColor); // write the text onto the button
         text(message, pos.x, pos.y);
-        println(overBox());
     }
 
     void activate(){

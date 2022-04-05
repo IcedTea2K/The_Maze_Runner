@@ -12,6 +12,7 @@ boolean[] direction = new boolean[4]; // users' input
 
 PFont font;
 StopWatch clock;
+ArrayList<Button> allButtons = new ArrayList<Button>();
 Button test;
 void setup() {
     size(1080, 720);
@@ -21,9 +22,9 @@ void setup() {
     clock = new StopWatch();
     clock.start();
 
+    allButtons.add(new Button("Test", new PVector(97, 636), 30, true, color(0,0,0), color(255,255,255)));
     font = createFont("MunaBold", 16, true);
-    textFont(font);
-    
+    textFont(font);   
 }
 
 void draw() {
@@ -34,9 +35,8 @@ void draw() {
     clock.display();
 
     drawMainScene();
-    test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
-    test.display();
-    println("mouseX: "+mouseX + " mouseY: " + mouseY);
+    // test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
+    displayButtons();
 }
 
 void drawMainScene(){ // draw the 3D scene
@@ -86,6 +86,20 @@ void setDirection (int k, boolean isOn) { // record pressed keys (direction)
   }
 }
 
+void displayButtons(){
+  for(int x = 0; x < allButtons.size(); x++){
+    if(allButtons.get(x).isActive)
+      allButtons.get(x).display();
+  }
+}
+
+void mouseClicked(){
+  for(int x = 0; x < allButtons.size(); x++){
+    if(allButtons.get(x).isActive && allButtons.get(x).overBox()){
+      println("clicked");
+    }
+  }
+}
 
 void keyPressed() {
   if (key == CODED) setDirection(keyCode, true);
