@@ -121,6 +121,7 @@ public class Button {
     private int txtColor;
     private float widthScalar = 1.5f;
     private float heightScalar = 3;
+    boolean isActive = false;
     PVector pos;
     float fontSize;
     
@@ -139,7 +140,7 @@ public class Button {
         buttonWidth = textWidth(message);
     }
 
-    public boolean overBox(){
+    public boolean overBox(){ // detect if the mouse is hovering over the box
         return(mouseX > (pos.x - buttonWidth*(widthScalar-1)/2) && mouseX < pos.x - buttonWidth*(widthScalar-1)/2 + buttonWidth*widthScalar
             && mouseY < pos.y - buttonHeight*(heightScalar-2)/2 && mouseY > pos.y - buttonHeight*(heightScalar-2)/2 + buttonHeight * heightScalar);
     }
@@ -156,6 +157,14 @@ public class Button {
         fill(txtColor); // write the text onto the button
         text(message, pos.x, pos.y);
         println(overBox());
+    }
+
+    public void activate(){
+        isActive = true;
+    }
+
+    public void deactivate(){
+        isActive = false;
     }
 }
 public class MazeMaker { // create the maze

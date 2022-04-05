@@ -6,6 +6,7 @@ public class Button {
     private color txtColor;
     private float widthScalar = 1.5;
     private float heightScalar = 3;
+    boolean isActive = false;
     PVector pos;
     float fontSize;
     
@@ -41,5 +42,13 @@ public class Button {
         fill(txtColor); // write the text onto the button
         text(message, pos.x, pos.y);
         println(overBox());
+    }
+
+    void activate(){
+        isActive = true;
+    }
+
+    void deactivate(){
+        isActive = false;
     }
 }
