@@ -33,33 +33,51 @@ PFont font;
 StopWatch clock;
 ArrayList<Button> allButtons = new ArrayList<Button>();
 Button test;
+int gameStatus = 0; // 0 - intro; 1 - in game; 2 - game over
+
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
 
     clock = new StopWatch();
-    clock.start();
 
-    allButtons.add(new Button("Test", new PVector(97, 636), 30, true, color(0,0,0), color(255,255,255)));
+    allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
+    allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
     font = createFont("MunaBold", 16, true);
     textFont(font);   
 }
 
 public void draw() {
     background(100);    
-    mainMaze.display();
-    mainPlayer.action(direction);
+    drawMainScene(); // always draw this scene in the background;
+    if(gameStatus == 0)
+      drawWaitingScene();
+    else if(gameStatus == 2)
+      drawingEndingScene();
+    
 
     clock.display();
-
-    drawMainScene();
+    
     // test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
     displayButtons();
 }
 
-public void drawMainScene(){ // draw the 3D scene
-    rectMode(CENTER);
+public void drawWaitingScene(){
+  rectMode(CORNER);
+  fill(0, 200);
+  rect(0,0,width, height);
+}
+
+public void drawingEndingScene(){
+
+}
+
+public void drawMainScene(){ 
+    mainMaze.display();
+    mainPlayer.action(direction);
+
+    rectMode(CENTER); // draw the 3D scene
     noStroke();
     
     pushMatrix();
@@ -155,19 +173,21 @@ public class Button {
     }
 
     public boolean overBox(){ // detect if the mouse is hovering over the box
-        return(mouseX > (pos.x - buttonWidth*(widthScalar-1)/2) && mouseX < pos.x - buttonWidth*(widthScalar-1)/2 + buttonWidth*widthScalar
-            && mouseY < pos.y - buttonHeight*(heightScalar-2)/2 && mouseY > pos.y - buttonHeight*(heightScalar-2)/2 + buttonHeight * heightScalar);
+        return(mouseX > pos.x - buttonWidth*widthScalar/2 && mouseX < pos.x + buttonWidth*widthScalar/2
+            && mouseY < (pos.y + buttonHeight*(heightScalar-2)/2) - buttonHeight*heightScalar/2 
+                && mouseY > (pos.y + buttonHeight*(heightScalar-2)/2) + buttonHeight*heightScalar/2);
     }
 
     public void display(){
         calculateTextBox();
-        rectMode(CORNER);
+        rectMode(CENTER);
 
         noStroke();
         fill(buttonColor); // drarw plain button
         // some offset to write the text in the middle of the button
-        rect(pos.x - buttonWidth*(widthScalar-1)/2, pos.y - buttonHeight*(heightScalar-2)/2, buttonWidth * widthScalar, buttonHeight * heightScalar);
-
+        rect(pos.x, pos.y + buttonHeight*(heightScalar-2)/2, buttonWidth * widthScalar, buttonHeight * heightScalar);
+        
+        textAlign(CENTER);
         fill(txtColor); // write the text onto the button
         text(message, pos.x, pos.y);
     }
@@ -457,6 +477,7 @@ public class Player {
     }
 
     public void move(boolean[] input){
+        if(gameStatus != 1) return;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
         PVector direction;
@@ -710,7 +731,7 @@ public class StopWatch {
 
         DecimalFormat df = new DecimalFormat("00");
         
-        return df.format(m) + ":" + df.format(s) + "." + ms;
+        return df.format(m) + ":" + df.format(s) + "." + df.format(ms);
     }
 
     public void display(){
@@ -718,7 +739,7 @@ public class StopWatch {
         noStroke();
         rectMode(CENTER);
         fill(0);
-        rect(105, 585, 62, 30);
+        rect(106, 585, 64, 30);
         
         fill(0,255,0);
         text(this.timeInText(), 75, 590);   

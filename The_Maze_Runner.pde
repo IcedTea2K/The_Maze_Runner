@@ -14,33 +14,51 @@ PFont font;
 StopWatch clock;
 ArrayList<Button> allButtons = new ArrayList<Button>();
 Button test;
+int gameStatus = 0; // 0 - intro; 1 - in game; 2 - game over
+
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
     mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
 
     clock = new StopWatch();
-    clock.start();
 
-    allButtons.add(new Button("Test", new PVector(97, 636), 30, true, color(0,0,0), color(255,255,255)));
+    allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
+    allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
     font = createFont("MunaBold", 16, true);
     textFont(font);   
 }
 
 void draw() {
     background(100);    
-    mainMaze.display();
-    mainPlayer.action(direction);
+    drawMainScene(); // always draw this scene in the background;
+    if(gameStatus == 0)
+      drawWaitingScene();
+    else if(gameStatus == 2)
+      drawingEndingScene();
+    
 
     clock.display();
-
-    drawMainScene();
+    
     // test = new Button("Test", new PVector(97, 636), 30, color(0,0,0), color(255,255,255));
     displayButtons();
 }
 
-void drawMainScene(){ // draw the 3D scene
-    rectMode(CENTER);
+void drawWaitingScene(){
+  rectMode(CORNER);
+  fill(0, 200);
+  rect(0,0,width, height);
+}
+
+void drawingEndingScene(){
+
+}
+
+void drawMainScene(){ 
+    mainMaze.display();
+    mainPlayer.action(direction);
+
+    rectMode(CENTER); // draw the 3D scene
     noStroke();
     
     pushMatrix();

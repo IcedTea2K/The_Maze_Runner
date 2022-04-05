@@ -39,7 +39,7 @@ public class StopWatch {
 
         DecimalFormat df = new DecimalFormat("00");
         
-        return df.format(m) + ":" + df.format(s) + "." + ms;
+        return df.format(m) + ":" + df.format(s) + "." + df.format(ms);
     }
 
     void display(){
@@ -47,7 +47,7 @@ public class StopWatch {
         noStroke();
         rectMode(CENTER);
         fill(0);
-        rect(105, 585, 62, 30);
+        rect(106, 585, 64, 30);
         
         fill(0,255,0);
         text(this.timeInText(), 75, 590);   
