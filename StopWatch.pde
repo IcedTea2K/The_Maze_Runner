@@ -58,9 +58,13 @@ public class StopWatch {
         bestTime = (clock.getEllapsedTime() < bestTime) ? clock.getEllapsedTime() : bestTime;
     }
 
+    String getBestTimeStr(){
+        return (Float.isInfinite(bestTime)) ? this.timeInText(0.) : this.timeInText(bestTime);
+    }
+
     void display(){
         String currTimeStr = this.timeInText(Float.NaN);
-        String bestTimeStr = (Float.isInfinite(bestTime)) ? this.timeInText(0.) : this.timeInText(bestTime);
+        String bestTimeStr = getBestTimeStr();
         textFont(font, 20);
         
         fill(0,255,0);

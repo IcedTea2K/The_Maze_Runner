@@ -35,6 +35,7 @@ void setup() {
     allButtons.add(new Button("Solution", new PVector(949, 529), 20, false, color(0,123,255), color(0)));
     allButtons.add(new Button("HardCore", new PVector(949, 599), 20, false, color(0,123,255), color(0)));
     allButtons.add(new Button("Quit", new PVector(949, 669), 20, false, color(0,123,255), color(0)));
+    allButtons.add(new Button("Try Again", new PVector(width/2, height*3/4), 20, false, color(0,123,255), color(0))); 
 
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
@@ -66,8 +67,37 @@ void startMenuScene(){
   rect(0,0,width, height);
 }
 
-void endScene(){
-
+void instructionScene(){
+  startMenuScene(); // borrow the black background in the start menu
+  imageMode(CENTER);
+  
+  pushMatrix();
+  translate(width/2, height/3 + 50);
+  for(int x = 0; x <= 270; x+=90){ // just a smart way to cycle through the different directions and offset them
+    float xOffSet = sin(radians(x)) * 150;
+    float yOffSet = cos(radians(x)) * -150;  
+    color c = 255;
+    if(direction[(x/90 + 1)%4])
+      c = #00FFFF;
+    tint(c);
+    arrowsImg[x/90].resize(150, 0);
+    image(arrowsImg[x/90], xOffSet, yOffSet);
+    
+    fill(c);
+    if(x == 0){ // label the arrows
+      text("Forward", xOffSet, yOffSet - 80);
+    }else if(x/90 % 2 != 0){
+      pushMatrix();
+      translate(xOffSet + sin(radians(x))*80, yOffSet + cos(radians(x))*-80);
+      rotate(radians(x)); // make them appear vertically
+      text("Rotate", 0, 0);
+      popMatrix();
+      
+    }else{
+      text("Backward", xOffSet, yOffSet + 100);
+    }
+  }
+  popMatrix();
 }
 
 void drawMainScene(){ 
@@ -117,24 +147,23 @@ void drawMainScene(){
     popMatrix();
 }
 
-boolean setDirection (int k, boolean isOn) { // record pressed keys (direction)
-  switch(k) {
-  case LEFT:
-    direction[0] = isOn;    
-    break;
-  case UP:
-    direction[1] = isOn;
-    break;
-  case RIGHT:
-    direction[2] = isOn;
-    break;
-  case DOWN:
-    direction[3] = isOn;
-    break;
-  default:
-    return false; // no arrows have been pressed
+void endScene(){
+  startMenuScene(); // borrow the background of start menu
+  textSize(20);
+  
+  
+  if(completions > 0){
+    fill(random(0,255), random(0,255), random(0,255));
+    text("Congratulations Player, You Are the First Ever MAZE RUNNER!!", width/2, height*1/2 - 80);
   }
-  return true;
+  else{
+    fill(#cc0000);
+    text("Sorry! You did not make it out." , width/2, height*1/2 - 80);
+  }
+  fill(213, 133, 132);
+  text("Completions: " + completions, width/2, height*1/2);
+  
+  text("Best Time: " + clock.getBestTimeStr(), width/2, height*1/2 + 50);
 }
 
 void displayButtons(){
@@ -150,6 +179,7 @@ void startGame(){
 
   allButtons.get(0).deactivate();
   allButtons.get(1).deactivate();
+  allButtons.get(6).deactivate();
   allButtons.get(3).activate();
   allButtons.get(4).activate();
   allButtons.get(5).activate();
@@ -171,37 +201,13 @@ void returnToIntro(){
   gameStatus = 0;
 }
 
-void instructionScene(){
-  startMenuScene(); // borrow the black background in the start menu
-  imageMode(CENTER);
-  
-  pushMatrix();
-  translate(width/2, height/3 + 50);
-  for(int x = 0; x <= 270; x+=90){ // just a smart way to cycle through the different directions and offset them
-    float xOffSet = sin(radians(x)) * 150;
-    float yOffSet = cos(radians(x)) * -150;  
-    color c = 255;
-    if(direction[(x/90 + 1)%4])
-      c = #00FFFF;
-    tint(c);
-    arrowsImg[x/90].resize(150, 0);
-    image(arrowsImg[x/90], xOffSet, yOffSet);
-    
-    fill(c);
-    if(x == 0){ // label the arrows
-      text("Forward", xOffSet, yOffSet - 80);
-    }else if(x/90 % 2 != 0){
-      pushMatrix();
-      translate(xOffSet + sin(radians(x))*80, yOffSet + cos(radians(x))*-80);
-      rotate(radians(x)); // make them appear vertically
-      text("Rotate", 0, 0);
-      popMatrix();
-      
-    }else{
-      text("Backward", xOffSet, yOffSet + 100);
-    }
+void endGame(){
+  clock.stop();
+  for(int x = 0; x < allButtons.size()-1;x++){
+    allButtons.get(x).deactivate();
   }
-  popMatrix();
+  allButtons.get(6).activate();
+  gameStatus = 3;
 }
 
 void buttonEvent(int idx){
@@ -222,7 +228,33 @@ void buttonEvent(int idx){
     case 4:
       hardCoreMode = !hardCoreMode; // able to toggle the mode
       break;
+    case 5:
+      endGame();
+      break;
+    case 6:
+      startGame();
+      break;
   }
+}
+
+boolean setDirection (int k, boolean isOn) { // record pressed keys (direction)
+  switch(k) {
+  case LEFT:
+    direction[0] = isOn;    
+    break;
+  case UP:
+    direction[1] = isOn;
+    break;
+  case RIGHT:
+    direction[2] = isOn;
+    break;
+  case DOWN:
+    direction[3] = isOn;
+    break;
+  default:
+    return false; // no arrows have been pressed
+  }
+  return true;
 }
 
 void mouseClicked(){
