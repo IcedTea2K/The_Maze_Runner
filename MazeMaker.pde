@@ -75,9 +75,9 @@ public class MazeMaker { // create the maze
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }
 
-    void revealSolution(){
+    void revealSolution(boolean isRevealing){
         for(int x = 0; x < solution.size(); x++){
-            solution.get(x).isCorrect = true;   
+            solution.get(x).isCorrect = isRevealing;   
         }
     }
 

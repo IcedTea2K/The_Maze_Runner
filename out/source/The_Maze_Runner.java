@@ -37,6 +37,7 @@ int gameStatus = 0; // 0 - intro; 1 - instructions; 2 - in game; 3 - game over
 boolean hardCoreMode = false;
 PImage[] arrowsImg = new PImage[4];
 boolean isMoving = false;
+boolean isResolved = false;
 
 int completions = 0; // number of times the players has gone through the maze
 float bestTime = Float.POSITIVE_INFINITY;  // the best/fastest time of completion
@@ -235,7 +236,8 @@ public void buttonEvent(int idx){
       returnToIntro();
       break;
     case 3:
-      mainMaze.revealSolution();
+      isResolved = !isResolved;
+      mainMaze.revealSolution(isResolved);
       break;
     case 4:
       hardCoreMode = !hardCoreMode; // able to toggle the mode
@@ -391,9 +393,9 @@ public class MazeMaker { // create the maze
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
     }
 
-    public void revealSolution(){
+    public void revealSolution(boolean isRevealing){
         for(int x = 0; x < solution.size(); x++){
-            solution.get(x).isCorrect = true;   
+            solution.get(x).isCorrect = isRevealing;   
         }
     }
 
