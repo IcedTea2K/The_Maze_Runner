@@ -38,7 +38,8 @@ boolean hardCoreMode = false;
 PImage[] arrowsImg = new PImage[4];
 boolean isMoving = false;
 
-
+int completions = 0; // number of times the players has gone through the maze
+float bestTime = 0;  // the best/fastest time of completion
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
@@ -73,6 +74,7 @@ public void draw() {
       endScene();
     
     displayButtons();
+    println("completions: "+completions);
     // rect(mouseX, mouseY, 40, 20);
     // println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
@@ -88,11 +90,21 @@ public void endScene(){
 }
 
 public void drawMainScene(){ 
+    if(isMoving == true && !clock.running) // preliminary check
+      clock.start();
+    if(mainPlayer.isDone){
+      clock.stop();
+      isMoving = false;
+      completions++;
+      bestTime = (clock.getEllapsedTime() > bestTime) ? clock.getEllapsedTime() : bestTime;
+
+      mainPlayer.isDone = false;
+    }
+      
     mainMaze.display(hardCoreMode);
     mainPlayer.action(direction);
     clock.display();
-    if(isMoving == true)
-      clock.start();
+    
 
     rectMode(CENTER); // draw the 3D scene
     noStroke();
@@ -566,6 +578,7 @@ public class Player {
     float speed = 0.5f;
     int size = 6;
     float heading = 0;
+    boolean isDone = false;
 
     MazeSquare currSquare;
     int[] currSquareIdx;
@@ -722,7 +735,7 @@ public class Player {
             maze.makeMaze(); // restart the maze
             loc.y = maze.getSquare(0,0).getLocation().y;
             loc.x -= currSquare.getLocation().x;
-            
+            isDone = true; 
             currSquareIdx[0] = 0;
             currSquareIdx[1] = 0;
         }
@@ -818,22 +831,33 @@ public class StopWatch {
         return endTime - startTime;
     }
 
-    public float millisecond(){
-        return getEllapsedTime() % 100; // round to 2 decimals
+    
+    public float millisecond(float t){
+        return t % 100; // round to 2 decimals
+    }
+    
+    public float second(float t){ // calculate any given value in ms
+        return round(t/1000) % 60;
     }
 
-    public float second(){
-        return round((getEllapsedTime()/1000)) % 60;
+    public float minute(float t){
+        return round(t/(1000*60)) % 60;
     }
 
-    public float minute(){
-        return round((getEllapsedTime()/ (1000*60))) % 60;
-    }
-
-    public String timeInText(){
-        int s = PApplet.parseInt(this.second());
-        int m = PApplet.parseInt(this.minute());
-        int ms = PApplet.parseInt(this.millisecond());
+    public String timeInText(float t){
+        int s;
+        int m;
+        int ms;
+        if(t == -1){ // not calculating specified time -- just the current ellapsed time in general
+            s = PApplet.parseInt(this.second(this.getEllapsedTime()));
+            m = PApplet.parseInt(this.minute(this.getEllapsedTime()));
+            ms = PApplet.parseInt(this.millisecond(this.getEllapsedTime()));
+        }else{
+            ms = PApplet.parseInt(this.millisecond(t));
+            s = PApplet.parseInt(this.second(t));
+            m = PApplet.parseInt(this.minute(t));
+        }
+        
 
         DecimalFormat df = new DecimalFormat("00");
         
@@ -841,12 +865,12 @@ public class StopWatch {
     }
 
     public void display(){
-        String time = this.timeInText();
+        String time = this.timeInText(-1);
         textFont(font, 20);
         noStroke();
         rectMode(CENTER);
         fill(0);
-        rect(106, 585, textWidth(time), textAscent());
+        rect(106, 585, 65, textAscent());
         
         fill(0,255,0);
         text(time, 106, 585 + textAscent()/4);   

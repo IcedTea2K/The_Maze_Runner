@@ -20,22 +20,33 @@ public class StopWatch {
         return endTime - startTime;
     }
 
-    float millisecond(){
-        return getEllapsedTime() % 100; // round to 2 decimals
+    
+    float millisecond(float t){
+        return t % 100; // round to 2 decimals
+    }
+    
+    float second(float t){ // calculate any given value in ms
+        return round(t/1000) % 60;
     }
 
-    float second(){
-        return round((getEllapsedTime()/1000)) % 60;
+    float minute(float t){
+        return round(t/(1000*60)) % 60;
     }
 
-    float minute(){
-        return round((getEllapsedTime()/ (1000*60))) % 60;
-    }
-
-    String timeInText(){
-        int s = int(this.second());
-        int m = int(this.minute());
-        int ms = int(this.millisecond());
+    String timeInText(float t){
+        int s;
+        int m;
+        int ms;
+        if(t == -1){ // not calculating specified time -- just the current ellapsed time in general
+            s = int(this.second(this.getEllapsedTime()));
+            m = int(this.minute(this.getEllapsedTime()));
+            ms = int(this.millisecond(this.getEllapsedTime()));
+        }else{
+            ms = int(this.millisecond(t));
+            s = int(this.second(t));
+            m = int(this.minute(t));
+        }
+        
 
         DecimalFormat df = new DecimalFormat("00");
         
@@ -43,12 +54,12 @@ public class StopWatch {
     }
 
     void display(){
-        String time = this.timeInText();
+        String time = this.timeInText(-1);
         textFont(font, 20);
         noStroke();
         rectMode(CENTER);
         fill(0);
-        rect(106, 585, textWidth(time), textAscent());
+        rect(106, 585, 65, textAscent());
         
         fill(0,255,0);
         text(time, 106, 585 + textAscent()/4);   

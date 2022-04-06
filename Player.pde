@@ -3,6 +3,7 @@ public class Player {
     float speed = 0.5;
     int size = 6;
     float heading = 0;
+    boolean isDone = false;
 
     MazeSquare currSquare;
     int[] currSquareIdx;
@@ -159,7 +160,7 @@ public class Player {
             maze.makeMaze(); // restart the maze
             loc.y = maze.getSquare(0,0).getLocation().y;
             loc.x -= currSquare.getLocation().x;
-            
+            isDone = true; 
             currSquareIdx[0] = 0;
             currSquareIdx[1] = 0;
         }
