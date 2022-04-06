@@ -60,11 +60,11 @@ public void draw() {
     drawMainScene(); // always draw this scene in the background;
     
     if(gameStatus == 0)
-      drawWaitingScene();
+      startMenuScene();
     else if(gameStatus == 1)
       instructionScene();
     else if(gameStatus == 3)
-      drawingEndingScene();
+      endScene();
     
     displayButtons();
     
@@ -72,13 +72,13 @@ public void draw() {
     
 }
 
-public void drawWaitingScene(){
+public void startMenuScene(){
   rectMode(CORNER);
   fill(0, 255);
   rect(0,0,width, height);
 }
 
-public void drawingEndingScene(){
+public void endScene(){
 
 }
 
@@ -140,6 +140,7 @@ public void displayButtons(){
   }
 }
 
+// main event functions that control the game -- BUTTONS
 public void startGame(){
   gameStatus = 2;
 
@@ -155,8 +156,16 @@ public void howToPlay(){
   gameStatus = 1;
 }
 
+public void returnToIntro(){
+  allButtons.get(2).deactivate();
+  allButtons.get(0).activate();
+  allButtons.get(1).activate();  
+
+  gameStatus = 0;
+}
+
 public void instructionScene(){
-  drawWaitingScene();
+  startMenuScene(); // borrow the black background in the start menu
   imageMode(CENTER);
   
   pushMatrix();
@@ -186,14 +195,6 @@ public void instructionScene(){
     }
   }
   popMatrix();
-}
-
-public void returnToIntro(){
-  allButtons.get(2).deactivate();
-  allButtons.get(0).activate();
-  allButtons.get(1).activate();  
-
-  gameStatus = 0;
 }
 
 public void buttonEvent(int idx){

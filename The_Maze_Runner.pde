@@ -41,11 +41,11 @@ void draw() {
     drawMainScene(); // always draw this scene in the background;
     
     if(gameStatus == 0)
-      drawWaitingScene();
+      startMenuScene();
     else if(gameStatus == 1)
       instructionScene();
     else if(gameStatus == 3)
-      drawingEndingScene();
+      endScene();
     
     displayButtons();
     
@@ -53,13 +53,13 @@ void draw() {
     
 }
 
-void drawWaitingScene(){
+void startMenuScene(){
   rectMode(CORNER);
   fill(0, 255);
   rect(0,0,width, height);
 }
 
-void drawingEndingScene(){
+void endScene(){
 
 }
 
@@ -146,7 +146,7 @@ void returnToIntro(){
 }
 
 void instructionScene(){
-  drawWaitingScene(); // borrow the black background in the start menu
+  startMenuScene(); // borrow the black background in the start menu
   imageMode(CENTER);
   
   pushMatrix();
