@@ -16,6 +16,7 @@ ArrayList<Button> allButtons = new ArrayList<Button>();
 
 int gameStatus = 0; // 0 - intro; 1 - instructions; 2 - in game; 3 - game over
 PImage[] arrowsImg = new PImage[4];
+boolean isMoving = false;
 
 void setup() {
     size(1080, 720);
@@ -67,6 +68,8 @@ void drawMainScene(){
     mainMaze.display();
     mainPlayer.action(direction);
     clock.display();
+    if(isMoving == true)
+      clock.start();
 
     rectMode(CENTER); // draw the 3D scene
     noStroke();
@@ -97,7 +100,7 @@ void drawMainScene(){
     popMatrix();
 }
 
-void setDirection (int k, boolean isOn) { // record pressed keys (direction)
+boolean setDirection (int k, boolean isOn) { // record pressed keys (direction)
   switch(k) {
   case LEFT:
     direction[0] = isOn;    
@@ -111,7 +114,10 @@ void setDirection (int k, boolean isOn) { // record pressed keys (direction)
   case DOWN:
     direction[3] = isOn;
     break;
+  default:
+    return false; // no arrows have been pressed
   }
+  return true;
 }
 
 void displayButtons(){
@@ -207,7 +213,8 @@ void mouseClicked(){
 }
 
 void keyPressed() {
-  if (key == CODED) setDirection(keyCode, true);
+  if (key == CODED) 
+    isMoving = setDirection(keyCode, true);
 }
 
 void keyReleased() {
