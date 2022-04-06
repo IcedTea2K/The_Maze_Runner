@@ -134,9 +134,9 @@ public class MazeMaker { // create the maze
         rect(loc.x, loc.y, size.x, size.y);        
     }
 
-    void display(){
+    void display(boolean isHardCore){
         drawBackground();
-        drawGrid();
+        if(!isHardCore) drawGrid(); // the 2D map is invisible in hardocre mode (except for visited ones)
     }
 
     MazeSquare getSquare(int rowIdx, int colIdx){ // return the specified square

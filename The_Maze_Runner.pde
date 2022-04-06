@@ -15,8 +15,10 @@ StopWatch clock;
 ArrayList<Button> allButtons = new ArrayList<Button>();
 
 int gameStatus = 0; // 0 - intro; 1 - instructions; 2 - in game; 3 - game over
+boolean hardCoreMode = false;
 PImage[] arrowsImg = new PImage[4];
 boolean isMoving = false;
+
 
 void setup() {
     size(1080, 720);
@@ -67,7 +69,7 @@ void endScene(){
 }
 
 void drawMainScene(){ 
-    mainMaze.display();
+    mainMaze.display(hardCoreMode);
     mainPlayer.action(direction);
     clock.display();
     if(isMoving == true)
@@ -204,6 +206,7 @@ void buttonEvent(int idx){
       mainMaze.revealSolution();
       break;
     case 4:
+      hardCoreMode = !hardCoreMode; // able to toggle the mode
       break;
   }
 }
@@ -212,7 +215,6 @@ void mouseClicked(){
   for(int x = 0; x < allButtons.size(); x++){
     if(allButtons.get(x).isActive && allButtons.get(x).overBox()){
       buttonEvent(x);
-      println(x);
       break;
     }
   }
