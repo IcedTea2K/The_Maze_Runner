@@ -20,7 +20,7 @@ public class Player {
     }
 
     void move(boolean[] input){
-        if(gameStatus != 1) return;
+        if(gameStatus != 2) return;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
         PVector direction;

@@ -13,8 +13,9 @@ boolean[] direction = new boolean[4]; // users' input
 PFont font;
 StopWatch clock;
 ArrayList<Button> allButtons = new ArrayList<Button>();
-Button test;
-int gameStatus = 0; // 0 - intro; 1 - in game; 2 - game over
+
+int gameStatus = 0; // 0 - intro; 1 - instructions; 2 - in game; 3 - game over
+PImage[] arrowsImg = new PImage[4];
 
 void setup() {
     size(1080, 720);
@@ -25,7 +26,12 @@ void setup() {
 
     allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
     allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
-    allButtons.add(new Button("Back", new PVector(width/2, height*7/10), 30, false, color(0,0,0), color(255,255,255))); 
+    allButtons.add(new Button("Back", new PVector(width/2, height*8/10), 30, false, color(0,0,0), color(255,255,255))); 
+    
+    arrowsImg[0] = loadImage("up_arrow.png");
+    arrowsImg[1] = loadImage("right_arrow.png");
+    arrowsImg[2] = loadImage("down_arrow.png");
+    arrowsImg[3] = loadImage("left_arrow.png");
     font = createFont("MunaBold", 16, true);
     textFont(font);   
 }
@@ -33,20 +39,23 @@ void setup() {
 void draw() {
     background(100);    
     drawMainScene(); // always draw this scene in the background;
+    
     if(gameStatus == 0)
       drawWaitingScene();
-    else if(gameStatus == 2)
+    else if(gameStatus == 1)
+      instructionScene();
+    else if(gameStatus == 3)
       drawingEndingScene();
     
-
-    clock.display();
-    
     displayButtons();
+    
+    
+    
 }
 
 void drawWaitingScene(){
   rectMode(CORNER);
-  fill(0, 200);
+  fill(0, 255);
   rect(0,0,width, height);
 }
 
@@ -57,6 +66,7 @@ void drawingEndingScene(){
 void drawMainScene(){ 
     mainMaze.display();
     mainPlayer.action(direction);
+    clock.display();
 
     rectMode(CENTER); // draw the 3D scene
     noStroke();
@@ -112,8 +122,8 @@ void displayButtons(){
 }
 
 void startGame(){
-  gameStatus = 1;
-  println(allButtons.size());
+  gameStatus = 2;
+
   allButtons.get(0).deactivate();
   allButtons.get(1).deactivate();
 }
@@ -122,12 +132,32 @@ void howToPlay(){
   allButtons.get(0).deactivate();
   allButtons.get(1).deactivate();
   allButtons.get(2).activate();
+  
+  gameStatus = 1;
+}
+
+void instructionScene(){
+  drawWaitingScene();
+  imageMode(CENTER);
+  
+  pushMatrix();
+  translate(width/2, height/3);
+  for(int x = 0; x <= 270; x+=90){ // just a smart way to cycle through the different directions and offset them
+    if(direction[(x/90 + 1)%4])
+      tint(#00FFFF);
+    else tint(255);
+    arrowsImg[x/90].resize(150, 0);
+    image(arrowsImg[x/90], sin(radians(x)) * 150, cos(radians(x)) * -150);
+  }
+  popMatrix();
 }
 
 void returnToIntro(){
   allButtons.get(2).deactivate();
   allButtons.get(0).activate();
   allButtons.get(1).activate();  
+
+  gameStatus = 0;
 }
 
 void buttonEvent(int idx){
