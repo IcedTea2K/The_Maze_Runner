@@ -47,7 +47,10 @@ public void setup() {
     allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,123,255), color(255,255,255)));
     allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,123,255), color(255,255,255))); 
     allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,123,255), color(255,255,255))); 
-    
+    allButtons.add(new Button("Solution", new PVector(949, 529), 20, false, color(0,123,255), color(0)));
+    allButtons.add(new Button("HardCore", new PVector(949, 599), 20, false, color(0,123,255), color(0)));
+    allButtons.add(new Button("Quit", new PVector(949, 669), 20, false, color(0,123,255), color(0)));
+
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
     arrowsImg[2] = loadImage("down_arrow.png");
@@ -68,9 +71,8 @@ public void draw() {
       endScene();
     
     displayButtons();
-    
-    
-    
+    // rect(mouseX, mouseY, 40, 20);
+    // println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
 
 public void startMenuScene(){
@@ -152,6 +154,9 @@ public void startGame(){
 
   allButtons.get(0).deactivate();
   allButtons.get(1).deactivate();
+  allButtons.get(3).activate();
+  allButtons.get(4).activate();
+  allButtons.get(5).activate();
 }
 
 public void howToPlay(){
