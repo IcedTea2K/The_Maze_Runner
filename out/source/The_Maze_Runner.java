@@ -43,9 +43,9 @@ public void setup() {
 
     clock = new StopWatch();
 
-    allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
-    allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
-    allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,0,0), color(255,255,255))); 
+    allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,123,255), color(255,255,255)));
+    allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,123,255), color(255,255,255))); 
+    allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,123,255), color(255,255,255))); 
     
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
@@ -238,8 +238,8 @@ public class Button {
     private float buttonWidth;
     private int buttonColor;
     private int txtColor;
-    private float widthScalar = 1.5f;
-    private float heightScalar = 3;
+    private float widthScalar = 2;
+    private float heightScalar = 2;
     boolean isActive = false;
     PVector pos;
     float fontSize;
@@ -255,14 +255,14 @@ public class Button {
 
     public void calculateTextBox(){
         textSize(fontSize);
-        buttonHeight = (textDescent() - textAscent());
-        buttonWidth = textWidth(message);
+        buttonHeight = textAscent() * heightScalar;
+        buttonWidth = textWidth(message) * widthScalar;
     }
 
     public boolean overBox(){ // detect if the mouse is hovering over the box
-        return(mouseX > pos.x - buttonWidth*widthScalar/2 && mouseX < pos.x + buttonWidth*widthScalar/2
-            && mouseY < (pos.y + buttonHeight*(heightScalar-2)/2) - buttonHeight*heightScalar/2 
-                && mouseY > (pos.y + buttonHeight*(heightScalar-2)/2) + buttonHeight*heightScalar/2);
+        return(mouseX > pos.x - buttonWidth/2 && mouseX < pos.x + buttonWidth/2)
+            && mouseY > (pos.y - buttonHeight/2)
+                && mouseY < (pos.y + buttonHeight/2);
     }
 
     public void display(){
@@ -272,11 +272,11 @@ public class Button {
         noStroke();
         fill(buttonColor); // drarw plain button
         // some offset to write the text in the middle of the button
-        rect(pos.x, pos.y + buttonHeight*(heightScalar-2)/2, buttonWidth * widthScalar, buttonHeight * heightScalar);
-        
+        rect(pos.x, pos.y, buttonWidth, buttonHeight);
+        println(overBox());
         textAlign(CENTER);
         fill(txtColor); // write the text onto the button
-        text(message, pos.x, pos.y);
+        text(message, pos.x, pos.y + buttonHeight/(heightScalar * 2)); // padding (or scale) * 2 will make the text appear in the middle
     }
 
     public void activate(){

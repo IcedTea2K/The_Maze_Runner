@@ -24,9 +24,9 @@ void setup() {
 
     clock = new StopWatch();
 
-    allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
-    allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
-    allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,0,0), color(255,255,255))); 
+    allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,123,255), color(255,255,255)));
+    allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,123,255), color(255,255,255))); 
+    allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,123,255), color(255,255,255))); 
     
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
