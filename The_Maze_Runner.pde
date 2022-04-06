@@ -21,7 +21,7 @@ boolean isMoving = false;
 boolean isResolved = false;
 
 int completions = 0; // number of times the players has gone through the maze
-float bestTime = Float.POSITIVE_INFINITY;  // the best/fastest time of completion
+
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
@@ -75,10 +75,9 @@ void drawMainScene(){
       clock.start();
     if(mainPlayer.isDone){      
       clock.stop();
-      bestTime = (clock.getEllapsedTime() < bestTime) ? clock.getEllapsedTime() : bestTime;
+      clock.evaluate(); // evaluate the best time
       clock.reset();
 
-      println(clock.timeInText(bestTime));
       completions++;
       mainPlayer.isDone = false;
       isMoving = false;
