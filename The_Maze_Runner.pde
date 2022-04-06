@@ -121,6 +121,7 @@ void displayButtons(){
   }
 }
 
+// main event functions that control the game -- BUTTONS
 void startGame(){
   gameStatus = 2;
 
@@ -136,8 +137,16 @@ void howToPlay(){
   gameStatus = 1;
 }
 
+void returnToIntro(){
+  allButtons.get(2).deactivate();
+  allButtons.get(0).activate();
+  allButtons.get(1).activate();  
+
+  gameStatus = 0;
+}
+
 void instructionScene(){
-  drawWaitingScene();
+  drawWaitingScene(); // borrow the black background in the start menu
   imageMode(CENTER);
   
   pushMatrix();
@@ -167,14 +176,6 @@ void instructionScene(){
     }
   }
   popMatrix();
-}
-
-void returnToIntro(){
-  allButtons.get(2).deactivate();
-  allButtons.get(0).activate();
-  allButtons.get(1).activate();  
-
-  gameStatus = 0;
 }
 
 void buttonEvent(int idx){
