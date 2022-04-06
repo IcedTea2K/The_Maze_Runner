@@ -26,7 +26,7 @@ void setup() {
 
     allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,0,0), color(255,255,255)));
     allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,0,0), color(255,255,255))); 
-    allButtons.add(new Button("Back", new PVector(width/2, height*8/10), 30, false, color(0,0,0), color(255,255,255))); 
+    allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,0,0), color(255,255,255))); 
     
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
@@ -141,13 +141,30 @@ void instructionScene(){
   imageMode(CENTER);
   
   pushMatrix();
-  translate(width/2, height/3);
+  translate(width/2, height/3 + 50);
   for(int x = 0; x <= 270; x+=90){ // just a smart way to cycle through the different directions and offset them
+    float xOffSet = sin(radians(x)) * 150;
+    float yOffSet = cos(radians(x)) * -150;  
+    color c = 255;
     if(direction[(x/90 + 1)%4])
-      tint(#00FFFF);
-    else tint(255);
+      c = #00FFFF;
+    tint(c);
     arrowsImg[x/90].resize(150, 0);
-    image(arrowsImg[x/90], sin(radians(x)) * 150, cos(radians(x)) * -150);
+    image(arrowsImg[x/90], xOffSet, yOffSet);
+    
+    fill(c);
+    if(x == 0){ // label the arrows
+      text("Forward", xOffSet, yOffSet - 80);
+    }else if(x/90 % 2 != 0){
+      pushMatrix();
+      translate(xOffSet + sin(radians(x))*80, yOffSet + cos(radians(x))*-80);
+      rotate(radians(x)); // make them appear vertically
+      text("Rotate", 0, 0);
+      popMatrix();
+      
+    }else{
+      text("Backward", xOffSet, yOffSet + 100);
+    }
   }
   popMatrix();
 }
