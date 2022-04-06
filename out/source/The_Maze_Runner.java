@@ -39,7 +39,7 @@ PImage[] arrowsImg = new PImage[4];
 boolean isMoving = false;
 
 int completions = 0; // number of times the players has gone through the maze
-float bestTime = 0;  // the best/fastest time of completion
+float bestTime = Float.POSITIVE_INFINITY;  // the best/fastest time of completion
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
@@ -74,7 +74,6 @@ public void draw() {
       endScene();
     
     displayButtons();
-    println("completions: "+completions);
     // rect(mouseX, mouseY, 40, 20);
     // println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
@@ -92,13 +91,15 @@ public void endScene(){
 public void drawMainScene(){ 
     if(isMoving == true && !clock.running) // preliminary check
       clock.start();
-    if(mainPlayer.isDone){
+    if(mainPlayer.isDone){      
       clock.stop();
-      isMoving = false;
-      completions++;
-      bestTime = (clock.getEllapsedTime() > bestTime) ? clock.getEllapsedTime() : bestTime;
+      bestTime = (clock.getEllapsedTime() < bestTime) ? clock.getEllapsedTime() : bestTime;
+      clock.reset();
 
+      println(clock.timeInText(bestTime));
+      completions++;
       mainPlayer.isDone = false;
+      isMoving = false;
     }
       
     mainMaze.display(hardCoreMode);
@@ -844,11 +845,11 @@ public class StopWatch {
         return round(t/(1000*60)) % 60;
     }
 
-    public String timeInText(float t){
+    public String timeInText(Float t){
         int s;
         int m;
         int ms;
-        if(t == -1){ // not calculating specified time -- just the current ellapsed time in general
+        if(t.isNaN()){ // not calculating specified time -- just the current ellapsed time in general
             s = PApplet.parseInt(this.second(this.getEllapsedTime()));
             m = PApplet.parseInt(this.minute(this.getEllapsedTime()));
             ms = PApplet.parseInt(this.millisecond(this.getEllapsedTime()));
@@ -865,7 +866,7 @@ public class StopWatch {
     }
 
     public void display(){
-        String time = this.timeInText(-1);
+        String time = this.timeInText(Float.NaN);
         textFont(font, 20);
         noStroke();
         rectMode(CENTER);
@@ -874,6 +875,11 @@ public class StopWatch {
         
         fill(0,255,0);
         text(time, 106, 585 + textAscent()/4);   
+    }
+
+    public void reset(){
+        startTime = 0;
+        endTime = 0;
     }
 }
   public void settings() {  size(1080, 720); }

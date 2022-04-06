@@ -33,11 +33,11 @@ public class StopWatch {
         return round(t/(1000*60)) % 60;
     }
 
-    String timeInText(float t){
+    String timeInText(Float t){
         int s;
         int m;
         int ms;
-        if(t == -1){ // not calculating specified time -- just the current ellapsed time in general
+        if(t.isNaN()){ // not calculating specified time -- just the current ellapsed time in general
             s = int(this.second(this.getEllapsedTime()));
             m = int(this.minute(this.getEllapsedTime()));
             ms = int(this.millisecond(this.getEllapsedTime()));
@@ -54,7 +54,7 @@ public class StopWatch {
     }
 
     void display(){
-        String time = this.timeInText(-1);
+        String time = this.timeInText(Float.NaN);
         textFont(font, 20);
         noStroke();
         rectMode(CENTER);
@@ -63,5 +63,10 @@ public class StopWatch {
         
         fill(0,255,0);
         text(time, 106, 585 + textAscent()/4);   
+    }
+
+    void reset(){
+        startTime = 0;
+        endTime = 0;
     }
 }

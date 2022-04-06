@@ -20,7 +20,7 @@ PImage[] arrowsImg = new PImage[4];
 boolean isMoving = false;
 
 int completions = 0; // number of times the players has gone through the maze
-float bestTime = 0;  // the best/fastest time of completion
+float bestTime = Float.POSITIVE_INFINITY;  // the best/fastest time of completion
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
@@ -55,7 +55,6 @@ void draw() {
       endScene();
     
     displayButtons();
-    println("completions: "+completions);
     // rect(mouseX, mouseY, 40, 20);
     // println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
@@ -73,13 +72,15 @@ void endScene(){
 void drawMainScene(){ 
     if(isMoving == true && !clock.running) // preliminary check
       clock.start();
-    if(mainPlayer.isDone){
+    if(mainPlayer.isDone){      
       clock.stop();
-      isMoving = false;
-      completions++;
-      bestTime = (clock.getEllapsedTime() > bestTime) ? clock.getEllapsedTime() : bestTime;
+      bestTime = (clock.getEllapsedTime() < bestTime) ? clock.getEllapsedTime() : bestTime;
+      clock.reset();
 
+      println(clock.timeInText(bestTime));
+      completions++;
       mainPlayer.isDone = false;
+      isMoving = false;
     }
       
     mainMaze.display(hardCoreMode);
