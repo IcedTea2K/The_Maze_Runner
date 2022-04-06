@@ -45,7 +45,6 @@ public class MazeMaker { // create the maze
             }
 
             if(reached) {
-                currSquare.isCorrect = true;
                 solution.add(currSquare);
             }
             
@@ -74,6 +73,12 @@ public class MazeMaker { // create the maze
 
         allSquares.get(rows-1).get(columns-1).removeSide(2);
         allSquares.get(rows-1).get(columns-1).isCorrect = true;
+    }
+
+    void revealSolution(){
+        for(int x = 0; x < solution.size(); x++){
+            solution.get(x).isCorrect = true;   
+        }
     }
 
     void reset(){ // delete all the squares + create a new maze

@@ -201,6 +201,7 @@ void buttonEvent(int idx){
       returnToIntro();
       break;
     case 3:
+      mainMaze.revealSolution();
       break;
     case 4:
       break;
