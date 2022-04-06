@@ -240,7 +240,7 @@ public class Button {
     private int txtColor;
     private float widthScalar = 2;
     private float heightScalar = 2;
-    boolean isActive = false;
+    boolean isActive = false; // depends one which scene, a button can be either activated or deactivated
     PVector pos;
     float fontSize;
     
@@ -270,10 +270,9 @@ public class Button {
         rectMode(CENTER);
 
         noStroke();
-        fill(buttonColor); // drarw plain button
-        // some offset to write the text in the middle of the button
+        fill(buttonColor); // draw plain button
         rect(pos.x, pos.y, buttonWidth, buttonHeight);
-        println(overBox());
+        
         textAlign(CENTER);
         fill(txtColor); // write the text onto the button
         text(message, pos.x, pos.y + buttonHeight/(heightScalar * 2)); // padding (or scale) * 2 will make the text appear in the middle
@@ -822,14 +821,15 @@ public class StopWatch {
     }
 
     public void display(){
+        String time = this.timeInText();
         textFont(font, 20);
         noStroke();
         rectMode(CENTER);
         fill(0);
-        rect(106, 585, 64, 30);
+        rect(106, 585, textWidth(time), textAscent());
         
         fill(0,255,0);
-        text(this.timeInText(), 75, 590);   
+        text(time, 106, 585 + textAscent()/4);   
     }
 }
   public void settings() {  size(1080, 720); }
