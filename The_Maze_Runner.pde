@@ -219,7 +219,7 @@ void mouseClicked(){
 
 void keyPressed() {
   if (key == CODED) 
-    isMoving = setDirection(keyCode, true);
+    isMoving = setDirection(keyCode, true) && gameStatus == 2;
 }
 
 void keyReleased() {

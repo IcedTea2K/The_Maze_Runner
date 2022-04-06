@@ -238,7 +238,7 @@ public void mouseClicked(){
 
 public void keyPressed() {
   if (key == CODED) 
-    isMoving = setDirection(keyCode, true);
+    isMoving = setDirection(keyCode, true) && gameStatus == 2;
 }
 
 public void keyReleased() {
