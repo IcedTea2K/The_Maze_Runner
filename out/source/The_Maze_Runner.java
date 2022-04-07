@@ -48,6 +48,7 @@ public void setup() {
 
     clock = new StopWatch();
 
+    // Instantiate buttons
     allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,123,255), color(255,255,255)));
     allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,123,255), color(255,255,255))); 
     allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,123,255), color(255,255,255))); 
@@ -56,6 +57,7 @@ public void setup() {
     allButtons.add(new Button("Quit", new PVector(949, 669), 20, false, color(0,123,255), color(0)));
     allButtons.add(new Button("Try Again", new PVector(width/2, height*3/4), 20, false, color(0,123,255), color(0))); 
 
+    // load the arrows drawing for the instruction scene
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
     arrowsImg[2] = loadImage("down_arrow.png");
@@ -66,12 +68,12 @@ public void setup() {
 
 public void draw() {
     background(100);    
-    drawMainScene(); // always draw this scene in the background;
-    
     if(gameStatus == 0)
       startMenuScene();
     else if(gameStatus == 1)
       instructionScene();
+    else if(gameStatus == 2)
+      drawMainScene();
     else if(gameStatus == 3)
       endScene();
     

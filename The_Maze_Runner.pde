@@ -29,6 +29,7 @@ void setup() {
 
     clock = new StopWatch();
 
+    // Instantiate buttons
     allButtons.add(new Button("Start", new PVector(width/2, height/2), 30, true, color(0,123,255), color(255,255,255)));
     allButtons.add(new Button("How to Play", new PVector(width/2, height*7/10), 30, true, color(0,123,255), color(255,255,255))); 
     allButtons.add(new Button("Back", new PVector(width/2, height*8/10 + 50), 30, false, color(0,123,255), color(255,255,255))); 
@@ -37,6 +38,7 @@ void setup() {
     allButtons.add(new Button("Quit", new PVector(949, 669), 20, false, color(0,123,255), color(0)));
     allButtons.add(new Button("Try Again", new PVector(width/2, height*3/4), 20, false, color(0,123,255), color(0))); 
 
+    // load the arrows drawing for the instruction scene
     arrowsImg[0] = loadImage("up_arrow.png");
     arrowsImg[1] = loadImage("right_arrow.png");
     arrowsImg[2] = loadImage("down_arrow.png");
@@ -47,19 +49,20 @@ void setup() {
 
 void draw() {
     background(100);    
-    drawMainScene(); // always draw this scene in the background;
-    
     if(gameStatus == 0)
       startMenuScene();
     else if(gameStatus == 1)
       instructionScene();
+    else if(gameStatus == 2)
+      drawMainScene();
     else if(gameStatus == 3)
       endScene();
     
     displayButtons();
 }
 
-void startMenuScene(){
+/****************************** ALL THE SCENES IN GAME ******************************/
+void startMenuScene(){ // nothing but a plain black canvas
   rectMode(CORNER);
   fill(0, 255);
   rect(0,0,width, height);
@@ -72,10 +75,10 @@ void instructionScene(){
   pushMatrix();
   translate(width/2, height/3 + 50);
   for(int x = 0; x <= 270; x+=90){ // just a smart way to cycle through the different directions and offset them
-    float xOffSet = sin(radians(x)) * 150;
-    float yOffSet = cos(radians(x)) * -150;  
+    float xOffSet = sin(radians(x)) * 150; // since the drawing offset only y or x and they do that alternately
+    float yOffSet = cos(radians(x)) * -150;  // sin() cos() would be able to replicate this alternating pattern
     color c = 255;
-    if(direction[(x/90 + 1)%4])
+    if(direction[(x/90 + 1)%4]) // change color based on input
       c = #00FFFF;
     tint(c);
     arrowsImg[x/90].resize(150, 0);
@@ -85,12 +88,11 @@ void instructionScene(){
     if(x == 0){ // label the arrows
       text("Forward", xOffSet, yOffSet - 80);
     }else if(x/90 % 2 != 0){
-      pushMatrix();
+      pushMatrix(); // make them appear vertically
       translate(xOffSet + sin(radians(x))*80, yOffSet + cos(radians(x))*-80);
-      rotate(radians(x)); // make them appear vertically
+      rotate(radians(x)); 
       text("Rotate", 0, 0);
       popMatrix();
-      
     }else{
       text("Backward", xOffSet, yOffSet + 100);
     }
@@ -100,8 +102,8 @@ void instructionScene(){
 
 void drawMainScene(){ 
     if(isMoving == true && !clock.running) // preliminary check
-      clock.start();
-    if(mainPlayer.isDone){      
+      clock.start(); // only start when the player has started moving && the clock is not already running
+    if(mainPlayer.isDone){ // if the player has reached the end
       clock.stop();
       clock.evaluate(); // evaluate the best time
       clock.reset();
@@ -111,12 +113,12 @@ void drawMainScene(){
       isMoving = false;
     }
       
-    mainMaze.display(hardCoreMode);
-    mainPlayer.action(direction);
+    mainMaze.display(hardCoreMode); // draw the 2D Map
+    mainPlayer.action(direction); // draw the player on 2D map
     clock.display();
     
-
-    rectMode(CENTER); // draw the 3D scene
+    // draw the 3D scene //
+    rectMode(CENTER); 
     noStroke();
     
     pushMatrix();
@@ -124,20 +126,20 @@ void drawMainScene(){
     fill(#039be5);
     rect(0, 0, mainSceneW, mainSceneH); // draw the background
     
-    // rectMode(CORNER);
-    float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size(); 
+    float sliceWidth = mainSceneW/mainPlayer.playerVisibility.size(); // divide the screne into the number of rays
     float max = 100;
     for(int x = 0; x < mainPlayer.playerVisibility.size();x++){ // each slice corresponds to one ray
         float dist = mainPlayer.playerVisibility.get(x).distanceToIntersection();
 
         // projection of ray onto the camera --> fix the fish eye effects    
         dist *= cos(radians(mainPlayer.playerVisibility.get(x).heading - mainPlayer.heading)); 
-        if(dist>max) max = dist; // change the maximum distance to avoid random rendering bug
+        if(dist>max) max = dist; // change the maximum distance to avoid random rendering bug due to map()
+        // modify the brightness as well as the wall height accordingly (to create an illusion of distance)
         float brightness = map(dist - mainPlayer.size/2, 0, max, 255, 0);
         float sliceHeight = map(dist - mainPlayer.size/2, 0, max, mainSceneH, 0);
-        if(mainPlayer.playerVisibility.get(x).facingEntry)
+        if(mainPlayer.playerVisibility.get(x).facingEntry) // draw the entry green (behind the player)
           fill(0,255,0,brightness);
-        else if(mainPlayer.playerVisibility.get(x).facingExit)
+        else if(mainPlayer.playerVisibility.get(x).facingExit) // draw the exit red (at the end)
           fill(0,0,255,brightness); 
         else fill(#C07F80, brightness);
         rect(x*sliceWidth - mainSceneW/2 + sliceWidth/2, 0, sliceWidth, sliceHeight);
@@ -149,8 +151,7 @@ void endScene(){
   startMenuScene(); // borrow the background of start menu
   textSize(20);
   
-  
-  if(completions > 0){
+  if(completions > 0){ // only congratulate them if they've completed the maze at least once
     fill(random(0,255), random(0,255), random(0,255));
     text("Congratulations Player, You Are the First Ever MAZE RUNNER!!", width/2, height*1/2 - 80);
   }
@@ -164,14 +165,18 @@ void endScene(){
   text("Best Time: " + clock.getBestTimeStr(), width/2, height*1/2 + 50);
 }
 
-void displayButtons(){
+void displayButtons(){ // show all the active buttons
   for(int x = 0; x < allButtons.size(); x++){
     if(allButtons.get(x).isActive)
       allButtons.get(x).display();
   }
 }
 
-// main event functions that control the game -- BUTTONS
+/****************************** BUTTONS' FUNCTIONS ******************************/
+//** mostly control the state of the game, rather changing component directly **//
+// Disclaimed: the reason loops (or functions) are not used to make the code   //
+// more readable and efficient is because some buttons require a specific     //
+// order of activating and deactivating,in order to not affect other buttons //
 void startGame(){
   gameStatus = 2;
 
@@ -208,7 +213,7 @@ void endGame(){
   gameStatus = 3;
 }
 
-void buttonEvent(int idx){
+void buttonEvent(int idx){ // turn on specific functions based on inputs (or clicks)
   switch(idx){
     case 0:
       startGame();
@@ -220,7 +225,7 @@ void buttonEvent(int idx){
       returnToIntro();
       break;
     case 3:
-      isResolved = !isResolved;
+      isResolved = !isResolved; // able to toggle the visibility of the solution
       mainMaze.revealSolution(isResolved);
       break;
     case 4:
@@ -230,7 +235,7 @@ void buttonEvent(int idx){
       endGame();
       break;
     case 6:
-      clock.stop(); // restart the game
+      clock.stop(); // restart the game + reset all the stats
       clock.reset();
       clock.bestTime = Float.POSITIVE_INFINITY;
       isMoving = false;
@@ -263,7 +268,7 @@ boolean setDirection (int k, boolean isOn) { // record pressed keys (direction)
 
 void mouseClicked(){
   for(int x = 0; x < allButtons.size(); x++){
-    if(allButtons.get(x).isActive && allButtons.get(x).overBox()){
+    if(allButtons.get(x).isActive && allButtons.get(x).overBox()){ // detect the clicks are elligible
       buttonEvent(x);
       break;
     }
@@ -272,7 +277,7 @@ void mouseClicked(){
 
 void keyPressed() {
   if (key == CODED) 
-    isMoving = setDirection(keyCode, true) && gameStatus == 2;
+    isMoving = setDirection(keyCode, true) && gameStatus == 2; // only considered as moving when the game has started and there's input
 }
 
 void keyReleased() {
