@@ -151,22 +151,28 @@ public class Player {
         ellipseMode(CENTER);
         noStroke();
         fill(0,255,0);
-        if(currSquareIdx[1] < 0){
-            loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
-            loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
-
-            currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
+        if(currSquareIdx[1] < 0){ 
+            // uncomment the following 3-lines to for cheat code --> go back into the entrace will get you to the exit //
+            // loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
+            // loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
+            // currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
+            
+            this.reset(); // then comment this //
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
             maze.makeMaze(); // restart the maze
-            loc.y = maze.getSquare(0,0).getLocation().y;
-            loc.x -= currSquare.getLocation().x;
+            this.reset();
             isDone = true; 
-            currSquareIdx[0] = 0;
-            currSquareIdx[1] = 0;
         }
         detectWalls();
         circle(loc.x, loc.y, size);
         popMatrix();        
+    }
+
+    void reset(){ // reset the player to the first square
+        currSquare = maze.getSquare(0,0);
+        currSquareIdx = currSquare.getIdx();
+        loc.x = currSquare.getLocation().x + maze.squareSize/2;
+        loc.y = currSquare.getLocation().y + maze.squareSize/2; 
     }
 
     void action(boolean[] input){

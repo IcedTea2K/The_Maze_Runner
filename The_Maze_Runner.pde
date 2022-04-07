@@ -57,8 +57,6 @@ void draw() {
       endScene();
     
     displayButtons();
-    // rect(mouseX, mouseY, 40, 20);
-    // println("mouseX: "+mouseX + " mouseY: " + mouseY);
 }
 
 void startMenuScene(){
@@ -232,6 +230,12 @@ void buttonEvent(int idx){
       endGame();
       break;
     case 6:
+      clock.stop(); // restart the game
+      clock.reset();
+      clock.bestTime = Float.POSITIVE_INFINITY;
+      isMoving = false;
+      completions = 0;
+      mainPlayer.reset();
       startGame();
       break;
   }
