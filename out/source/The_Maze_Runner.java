@@ -364,7 +364,7 @@ public class MazeMaker { // create the maze
 
     int squareSize = 15;
     ArrayList<ArrayList<MazeSquare>> allSquares = new ArrayList<ArrayList<MazeSquare>>(); // 2D array to replicate the grid
-    ArrayList<MazeSquare> solution = new ArrayList<MazeSquare>();
+    ArrayList<MazeSquare> solution = new ArrayList<MazeSquare>(); // solution for the maze
     Stack<MazeSquare> visitedSquareStack = new Stack<MazeSquare>();
 
     final float mazeWidth;
@@ -372,7 +372,7 @@ public class MazeMaker { // create the maze
     public MazeMaker (float xPos, float yPos, float mazeWidth, float mazeHeight) {
         loc = new PVector(xPos, yPos);
         size = new PVector(mazeWidth, mazeHeight);
-        rows = PApplet.parseInt(mazeHeight/squareSize); // 10 = square's size
+        rows = PApplet.parseInt(mazeHeight/squareSize); // calculate properties of maze based on square size
         columns = PApplet.parseInt(mazeWidth/squareSize);
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
@@ -380,21 +380,29 @@ public class MazeMaker { // create the maze
         makeMaze();
     }
 
+    public void createGrid(){ // simple function to instantiate sufficient number of square and put it into the 2D array
+        for(int y = 0; y < rows; y++){            
+            allSquares.add(new ArrayList<MazeSquare>());
+            for(int x = 0; x < columns; x++){    
+                allSquares.get(y).add(new MazeSquare(x*squareSize, y*squareSize, squareSize, new int[] {x,y}));
+            }
+        }
+    }
+
     public void makeMaze(){
         visitedSquareStack.push(allSquares.get(0).get(0)); // inital cell is always the first square on top left
-        allSquares.get(0).get(0).visit();
-        allSquares.get(0).get(0).removeSide(0);
+        allSquares.get(0).get(0).visit(); // mark this square as visited
+        allSquares.get(0).get(0).removeSide(0); // the top side of this square is always removed
 
         ArrayList<MazeSquare> availableNeighbor = new ArrayList<MazeSquare>();
         MazeSquare lastRightSquare = allSquares.get(0).get(0);
         boolean reached = false;
         while(!visitedSquareStack.empty()){
-            MazeSquare currSquare = visitedSquareStack.pop();
-
-            int[] neighborIdx = checkNeighbor(currSquare);
+            MazeSquare currSquare = visitedSquareStack.pop(); // examining the square ontop of the stack
+            int[] neighborIdx = checkNeighbor(currSquare); // check for all possible neighbors -- most will have 4; the least is 2
             
-            for(int x = 0; x < 4; x++){
-                if(neighborIdx[x] == -1) continue;
+            for(int x = 0; x < 4; x++){ // check if the neighbors are vistited, if they are not, they are considered available to visit
+                if(neighborIdx[x] == -1) continue; 
                     
                 if(x%2 == 0 && !allSquares.get(currSquare.getIdx()[1]).get(neighborIdx[x]).hasVisited())
                     availableNeighbor.add(allSquares.get(currSquare.getIdx()[1]).get(neighborIdx[x]));
@@ -402,38 +410,34 @@ public class MazeMaker { // create the maze
                     availableNeighbor.add(allSquares.get(neighborIdx[x]).get(currSquare.getIdx()[0]));
             }
 
-            if(reached) {
+            if(reached) // has returned to the main path (solution)
                 solution.add(currSquare);
-            }
             
-            if(availableNeighbor.size() == 0) {
-                if(currSquare.getIdx()[0] == columns-1 && currSquare.getIdx()[1] == rows-1 || currSquare == lastRightSquare){
-                    
+            if(availableNeighbor.size() == 0) { // all the neighbor of this square has beeen checked --> this square is good to go
+                if(currSquare.getIdx()[0] == columns-1 && currSquare.getIdx()[1] == rows-1 || currSquare == lastRightSquare)
                     reached = true;
-                }
                 continue;
             }else if(availableNeighbor.size() != 0 && reached){
-                lastRightSquare = currSquare;
-                reached = false;
+                lastRightSquare = currSquare; // there are neighbors to check out --> must mark this square as belonging to the main path
+                reached = false; // before branching out and check other neighbors
             }
 
-            visitedSquareStack.push(currSquare);
+            visitedSquareStack.push(currSquare); // push this one ontop of the stack
 
-            int tempRandomNeighborIdx = PApplet.parseInt(round(random(0, availableNeighbor.size()-1)));
-            currSquare.removeSide(availableNeighbor.get(tempRandomNeighborIdx)); // remove adjacent sides
+            int tempRandomNeighborIdx = PApplet.parseInt(round(random(0, availableNeighbor.size()-1))); // randomly select the neighbors
+            currSquare.removeSide(availableNeighbor.get(tempRandomNeighborIdx)); // remove adjacent sides for both squares
             availableNeighbor.get(tempRandomNeighborIdx).removeSide(currSquare);
 
-
             availableNeighbor.get(tempRandomNeighborIdx).visit(); // mark the chosen neighbor visited
-            visitedSquareStack.push(availableNeighbor.get(tempRandomNeighborIdx));      
-            availableNeighbor.clear(); // reset
+            visitedSquareStack.push(availableNeighbor.get(tempRandomNeighborIdx)); // push it ontop of the stack    
+            availableNeighbor.clear(); // reset the array of available neighbors
         }
 
-        allSquares.get(rows-1).get(columns-1).removeSide(2);
-        allSquares.get(rows-1).get(columns-1).isCorrect = true;
+        allSquares.get(rows-1).get(columns-1).removeSide(2); // the last square always gets its bottom removed
+        allSquares.get(rows-1).get(columns-1).isCorrect = true; // and always belongs to the solution
     }
 
-    public void revealSolution(boolean isRevealing){
+    public void revealSolution(boolean isRevealing){ // display the solution in the 2D map
         for(int x = 0; x < solution.size(); x++){
             solution.get(x).isCorrect = isRevealing;   
         }
@@ -446,7 +450,7 @@ public class MazeMaker { // create the maze
         makeMaze();
     }
 
-    public int[] checkNeighbor(MazeSquare square){
+    public int[] checkNeighbor(MazeSquare square){ // check how many neighbor there are + return their idices 
         int[] possibleNeighbors = new int[4];
         for(int x = 0; x<4;x++) possibleNeighbors[x] = -1;
         if(square.getIdx()[0] - 1 >= 0){
@@ -464,22 +468,12 @@ public class MazeMaker { // create the maze
         return possibleNeighbors;
     }
 
-    public void createGrid(){
-        for(int y = 0; y < rows; y++){            
-            allSquares.add(new ArrayList<MazeSquare>());
-            for(int x = 0; x < columns; x++){    
-                allSquares.get(y).add(new MazeSquare(x*squareSize, y*squareSize, squareSize, new int[] {x,y}));
-            }
-        }
-    }
-
     public void drawGrid(){
         pushMatrix();
         translate(loc.x, loc.y); // reset the grid to make it easer to draw the squares
         for(int y = 0; y < rows; y++){
             for(int x = 0; x<columns; x++){
                 allSquares.get(y).get(x).display();
-                // println(allSquares.get(y).get(x).info().x + " " + allSquares.get(y).get(x).info().y);
             }
         }
         popMatrix();
@@ -506,7 +500,7 @@ public class MazeMaker { // create the maze
     }
 
     public PVector getLoc(){
-        return loc; 
+        return loc; // a clone just to be safe (since it's a pointer) 
     }
 }
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
@@ -515,12 +509,12 @@ PVector[] verticies = {new PVector(0,0), new PVector(1,0),
 public class MazeSquare{
     final PVector loc; // prevent these from being changed later on
     final int[] idx;
-    boolean[] isClosed = {true, true, true, true};
+    boolean[] isClosed = {true, true, true, true}; // which side is closed or open; 0 - top, 1 - right; 2 - bot; 3 - left
     int wallColor = color(255);
 
     float size;
-    boolean alreadyVisited = false;
-    boolean isCorrect = false;
+    boolean alreadyVisited = false; // status of the square
+    boolean isCorrect = false; // also status of the square
     public MazeSquare (float xPos, float yPos, float size, int[] idx) {
         loc = new PVector(xPos, yPos);
         this.size = size;
@@ -530,7 +524,7 @@ public class MazeSquare{
     public void display(){
         pushMatrix();
         translate(loc.x, loc.y); // move to desired location
-        if(isCorrect){
+        if(isCorrect){ // if part of the solution, color the square instead of drawing the outline
             fill(255,0,0);
             noStroke();
             rectMode(CORNER);
@@ -539,20 +533,15 @@ public class MazeSquare{
 
         stroke(wallColor);
         for(int x = 0; x < 4; x++){
-            if(isClosed[x]){
-                if(x != 3)
+            if(isClosed[x]){ // only drawn if they are indicated as closed
+                if(x != 3)  
                     line(verticies[x].x*size, verticies[x].y*size, verticies[x+1].x*size, verticies[x+1].y*size);
-                else
+                else // first and last vertices are connected for the last side
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
         }
         
         popMatrix();
-        
-    }
-
-    public void changeColor(int wallColor){
-        this.wallColor = wallColor;
     }
 
     public PVector getLocation(){
@@ -802,7 +791,7 @@ public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
     PVector intersection = null; // the point of intersection with the targeted boundary
-    // float heading; // or also called the direction of this ray
+    float heading; // used to created the vector direction
 
     boolean facingEntry = false;
     boolean facingExit = false;
@@ -810,10 +799,10 @@ public class Ray{
         this.pos = pos;
         direction.x = cos(radians(angle));
         direction.y = sin(radians(angle));
-        // this.heading = angle;
+        this.heading = angle;
     }
 
-    public boolean intersect(PVector start, PVector end){
+    public boolean intersect(PVector start, PVector end){ 
         // L1 = boundary; L2 = ray
         // L1: (x1, y1) = start; (x2, y2) = end
         // L2: (x3, y3) = pos; (x4, y4) = pos + direction
@@ -829,7 +818,7 @@ public class Ray{
         float x4 = direction.x + pos.x;
         float y4 = direction.y + pos.y;
 
-        float denominator = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+        float denominator = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4); // pure math to detect the intersection between two segments
         float t = ((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/denominator;
         float u = ((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/denominator; 
 
@@ -839,21 +828,21 @@ public class Ray{
             );
             intersection = temp;
             if(intersection.x >= 0 && intersection.x<=15
-                && intersection.y == 0)
+                && intersection.y == 0) // check facing the entry
                 facingEntry = true;
             else if(intersection.x >= 435 && intersection.x <= 450
                 && intersection.y == 240)
-                facingExit = true;
+                facingExit = true; // checking facing the exit
             return true;
         }
         return false;
     }
 
-    public float distanceToIntersection(){
+    public float distanceToIntersection(){ // calculate the distance of player to intersection (Duhhh!!!)
         return dist(pos.x, pos.y, intersection.x, intersection.y);
     }
 
-    public void connectIntersect(){
+    public void connectIntersect(){ // draw the ray 
         stroke(255);  
         line(pos.x, pos.y, intersection.x , intersection.y);
     }
@@ -861,7 +850,7 @@ public class Ray{
 public class StopWatch {
     float startTime = 0;
     float endTime = 0;
-    boolean running = false;
+    boolean running = false; // is the clock still running?
     float bestTime = Float.POSITIVE_INFINITY;  // the best/fastest time of completion
 
     public void start(){
@@ -890,7 +879,7 @@ public class StopWatch {
         return round(t/1000) % 60;
     }
 
-    public float minute(float t){
+    public float minute(float t){ // calculate any given value in ms
         return round(t/(1000*60)) % 60;
     }
 
@@ -914,11 +903,11 @@ public class StopWatch {
         return df.format(m) + ":" + df.format(s) + "." + df.format(ms);
     }
 
-    public void evaluate(){
+    public void evaluate(){ // was that the fastest run or no?
         bestTime = (clock.getEllapsedTime() < bestTime) ? clock.getEllapsedTime() : bestTime;
     }
 
-    public String getBestTimeStr(){
+    public String getBestTimeStr(){ // best time but in a proper format instead of ms
         return (Float.isInfinite(bestTime)) ? this.timeInText(0.f) : this.timeInText(bestTime);
     }
 
@@ -928,9 +917,9 @@ public class StopWatch {
         textFont(font, 20);
         
         fill(0,255,0);
-        text("Current Time", 106, 570);
+        text("Current Time", 106, 570); // label
         text(currTimeStr, 106, 590);
-        text("Best Time", 106, 630);
+        text("Best Time", 106, 630); // label
         text(bestTimeStr, 106, 650); 
     }
 

@@ -142,6 +142,6 @@ public class MazeMaker { // create the maze
     }
 
     PVector getLoc(){
-        return loc.clone(); // a clone just to be safe (since it's a pointer) 
+        return loc.copy(); // a copy just to be safe (since it's a pointer) 
     }
 }

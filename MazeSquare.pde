@@ -4,12 +4,12 @@ PVector[] verticies = {new PVector(0,0), new PVector(1,0),
 public class MazeSquare{
     final PVector loc; // prevent these from being changed later on
     final int[] idx;
-    boolean[] isClosed = {true, true, true, true};
+    boolean[] isClosed = {true, true, true, true}; // which side is closed or open; 0 - top, 1 - right; 2 - bot; 3 - left
     color wallColor = color(255);
 
     float size;
-    boolean alreadyVisited = false;
-    boolean isCorrect = false;
+    boolean alreadyVisited = false; // status of the square
+    boolean isCorrect = false; // also status of the square
     public MazeSquare (float xPos, float yPos, float size, int[] idx) {
         loc = new PVector(xPos, yPos);
         this.size = size;
@@ -19,7 +19,7 @@ public class MazeSquare{
     void display(){
         pushMatrix();
         translate(loc.x, loc.y); // move to desired location
-        if(isCorrect){
+        if(isCorrect){ // if part of the solution, color the square instead of drawing the outline
             fill(255,0,0);
             noStroke();
             rectMode(CORNER);
@@ -28,27 +28,21 @@ public class MazeSquare{
 
         stroke(wallColor);
         for(int x = 0; x < 4; x++){
-            if(isClosed[x]){
-                if(x != 3)
+            if(isClosed[x]){ // only drawn if they are indicated as closed
+                if(x != 3)  
                     line(verticies[x].x*size, verticies[x].y*size, verticies[x+1].x*size, verticies[x+1].y*size);
-                else
+                else // first and last vertices are connected for the last side
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
         }
-        
         popMatrix();
-        
-    }
-
-    void changeColor(color wallColor){
-        this.wallColor = wallColor;
     }
 
     PVector getLocation(){
         return loc.copy();
     }
 
-    float[] getBoundary(){
+    float[] getBoundary(){ // return the boundaries of the box
         float[] boundary = new float[4];
         for(int x = 0; x < 4; x++){
             if(x%2 == 0){ // top and bottom
@@ -60,7 +54,7 @@ public class MazeSquare{
         return boundary;
     }
 
-    PVector[] getBoundaryVerticies(){ 
+    PVector[] getBoundaryVerticies(){  // return the verticies of the boundary in actual units (instead of just the signs)
        PVector[] boundary = new PVector[4];
        
        for(int x = 0; x < 4; x++){
@@ -70,7 +64,7 @@ public class MazeSquare{
     }
 
     int[] getIdx(){
-        return idx.clone();
+        return idx.clone(); // clone just to be safe
     }
     
     void removeSide(MazeSquare neighbor){
@@ -78,7 +72,7 @@ public class MazeSquare{
         int tempColumnIdxDiff = neighbor.getIdx()[0] - idx[0]; 
         int tempRowIdxDiff = neighbor.getIdx()[1] - idx[1];
 
-        if(tempColumnIdxDiff < 0)
+        if(tempColumnIdxDiff < 0) // remove the side based on its targeted neighbor
             isClosed[3] = false;
         else if(tempRowIdxDiff < 0)
             isClosed[0] = false;
@@ -88,7 +82,7 @@ public class MazeSquare{
             isClosed[2] = false;
     }
 
-    void removeSide(int side){
+    void removeSide(int side){ // remove a specific side
         isClosed[side] = false;
     }
 
@@ -97,11 +91,11 @@ public class MazeSquare{
         isClosed[side] = true;
     }
 
-    void visit(){
+    void visit(){ // mark this square as visited
         alreadyVisited = true;
     }
 
-    boolean hasVisited(){
+    boolean hasVisited(){ // return the availaibility of this square
         return alreadyVisited;
     }
 }
