@@ -11,7 +11,7 @@ public class Button {
     float fontSize;
     
     public Button (String message, PVector pos, float fontSize, boolean isActive, color buttonColor, color txtColor) {
-        this.message = message;
+        this.message = message; // declare all the properties of this buttons
         this.pos = pos;
         this.fontSize = fontSize;
         this.buttonColor = buttonColor;
@@ -19,10 +19,10 @@ public class Button {
         this.isActive = isActive;
     }
 
-    void calculateTextBox(){
+    void calculateTextBox(){  // width and height are scaled by arbitary amount to make it look less cramped within the box
         textSize(fontSize);
-        buttonHeight = textAscent() * heightScalar;
-        buttonWidth = textWidth(message) * widthScalar;
+        buttonHeight = textAscent() * heightScalar; // textAscent return the highest baseline of that font
+        buttonWidth = textWidth(message) * widthScalar; // the width of the message
     }
 
     boolean overBox(){ // detect if the mouse is hovering over the box
