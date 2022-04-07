@@ -1,3 +1,8 @@
+/************************ Maze Square ************************/
+/*
+* This is only a class for the squares of the maze/grid. 
+* For the main program please view The_Maze_Runner.pde
+*/
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
 

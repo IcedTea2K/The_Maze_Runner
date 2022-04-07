@@ -1,3 +1,8 @@
+/************************ Maze Maker ************************/
+/*
+* This is only a class for maze generator. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class MazeMaker { // create the maze
     PVector size; 
     final PVector loc;    

@@ -1,3 +1,8 @@
+/************************ Button ************************/
+/*
+* This is only a class for buttons. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class Button {
     final String message;
     private float buttonHeight;

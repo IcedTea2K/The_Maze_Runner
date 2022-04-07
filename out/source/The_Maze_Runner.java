@@ -623,12 +623,12 @@ public class Player {
         this.reset();
     }
 
-    public void move(boolean[] input){
+    public void move(boolean[] input){ // movement + boundary detection
         if(gameStatus != 2) return;
         currSquare = maze.getSquare(currSquareIdx[1], currSquareIdx[0]);
 
         PVector direction;
-        if(input[0]) // rotate
+        if(input[0]) // rotate based on left and right arrow
             heading += -2;
         else if(input[2])
             heading += 2;
@@ -642,13 +642,14 @@ public class Player {
             direction.setMag(0);
         }
 
+        PVector futureLoc = PVector.add(direction, loc); // predict the future location
         float[] boundary = currSquare.getBoundary(); 
-        PVector futureLoc = PVector.add(direction, loc);
         
-        if(futureLoc.x <= boundary[3] + size/2){ // collision boundary
-            if(currSquare.isClosed[3])
+        //********************************* Collision checking *********************************//
+        if(futureLoc.x <= boundary[3] + size/2){ // collision boundary = offeset a bit from the actual boundary
+            if(currSquare.isClosed[3]) // no moving if the side is closed
                 direction.setMag(0);
-            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--; // actual boundary
+            else if(futureLoc.x < boundary[3]) currSquareIdx[0]--; // if passed the actual boundary --> reaches new square
         }else if(futureLoc.x >= boundary[1] - size/2){ // collision boundary
             if(currSquare.isClosed[1])
                 direction.setMag(0);
@@ -683,14 +684,15 @@ public class Player {
         }  
         return -1;
     }
-
-    public boolean castRay(Ray targetRay, MazeSquare targetSquare, int entrySide){
+    // utilize passing pointer as parameter --> doesn't have to return that point; instead can return another information 
+    // --> essentially returning two things with one function
+    public boolean castRay(Ray targetRay, MazeSquare targetSquare, int entrySide){ 
        int intersectedSide = -1;       
        PVector[] squareBoundary = targetSquare.getBoundaryVerticies(); // get the boundary
 
        for(int z = 0; z < 4; z++){
-            if(entrySide == z) continue; // prevent infinite recursion
-            if(z != 3){
+            if(entrySide == z) continue; // no point of checking the square the ray comes from --> prevent infinite recursion
+            if(z != 3){ // check if it hits any of the sides 
                 intersectedSide = (targetRay.intersect(squareBoundary[z], squareBoundary[z+1])) ? z : intersectedSide;
             }else{
                 intersectedSide = (targetRay.intersect(squareBoundary[0], squareBoundary[3])) ? 3 : intersectedSide;
@@ -702,7 +704,7 @@ public class Player {
         
         if((Arrays.equals(squareIdx, new int[]{0,0}) && intersectedSide == 0) || 
             (Arrays.equals(squareIdx, new int[]{maze.columns-1,maze.rows-1}) && intersectedSide == 2)){
-            return true;
+            return true; // prevent from checking the open-on-default sides of the first and last square
         }
         if(!targetSquare.isClosed[intersectedSide]){ // check if the intersected side is open
             if(intersectedSide == 0) // if open go to the next square
@@ -716,14 +718,13 @@ public class Player {
             intersectedSide += (intersectedSide <= 1) ? 2 : -2; // top of one square is bot of the other; same for left and right
             return castRay(targetRay, maze.getSquare(squareIdx[1], squareIdx[0]), intersectedSide);
         }
-
         return true; 
     }
 
     public void detectWalls(){ // gives the player's visibility
         playerVisibility.clear(); // reset everytime
 
-        for(float theta = -30+ heading; theta<=30+heading; theta+=0.5f){
+        for(float theta = -30+ heading; theta<=30+heading; theta+=0.5f){ // -30 to +30 is player's field of vision (FOV)
             Ray temp = new Ray(this.loc.copy(), theta);
             if(!castRay(temp, currSquare, -1) && checkBuffer() != -1){ // if in buffer zone, must check the next square as well
                 if(checkBuffer() == 0)
@@ -736,7 +737,7 @@ public class Player {
                     castRay(temp, maze.getSquare(currSquare.getIdx()[1], currSquare.getIdx()[0]-1), -1);
                 
             }
-            if(temp.intersection != null) playerVisibility.add(temp);
+            if(temp.intersection != null) playerVisibility.add(temp); // only add the ray if it actually hit any wall
         }
         
         for(Ray r: playerVisibility)
@@ -760,7 +761,7 @@ public class Player {
             // loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
             // currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
             
-            this.reset(); // then comment this //
+            this.reset(); // then comment this for the cheat code to actually work//
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
             maze.makeMaze(); // restart the maze
             this.reset();

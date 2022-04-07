@@ -1,3 +1,8 @@
+/************************ Stop Watch ************************/
+/*
+* This is only an object for stopwatch. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class StopWatch {
     float startTime = 0;
     float endTime = 0;

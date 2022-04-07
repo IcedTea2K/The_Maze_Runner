@@ -1,3 +1,8 @@
+/************************ Player ************************/
+/*
+* This is only a class for player. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class Player {
     PVector loc = new PVector(0,0);
     float speed = 0.5;

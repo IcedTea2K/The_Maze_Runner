@@ -1,3 +1,8 @@
+/************************ Ray ************************/
+/*
+* This is only an object for the implementation of rays of
+* visibility. For the main program please view The_Maze_Runner.pde
+*/
 public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
