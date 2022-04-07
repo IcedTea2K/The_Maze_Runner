@@ -2,7 +2,7 @@ public class Player {
     PVector loc = new PVector(0,0);
     float speed = 0.5;
     int size = 6;
-    float heading = 0;
+    float heading = 0; // where it is going toward
     boolean isDone = false;
 
     MazeSquare currSquare;
@@ -10,14 +10,11 @@ public class Player {
     MazeMaker maze;
     boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
                                                             // top - right - bottom - left
-    HashSet<MazeSquare> track = new HashSet<MazeSquare>();
-    ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
-    public Player (MazeMaker maze, MazeSquare firstSquare) {
+    HashSet<MazeSquare> track = new HashSet<MazeSquare>(); // the squares the player has gone through
+    ArrayList<Ray> playerVisibility = new ArrayList<Ray>(); // container for all the rays
+    public Player (MazeMaker maze) {
         this.maze = maze;
-        currSquare = firstSquare;
-        currSquareIdx = currSquare.getIdx();
-        loc.x = firstSquare.getLocation().x + firstSquare.size/2;
-        loc.y = firstSquare.getLocation().y + firstSquare.size/2;
+        this.reset();
     }
 
     void move(boolean[] input){

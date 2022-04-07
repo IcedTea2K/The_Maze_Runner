@@ -25,7 +25,7 @@ int completions = 0; // number of times the players has gone through the maze
 void setup() {
     size(1080, 720);
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
-    mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
+    mainPlayer = new Player(mainMaze);
 
     clock = new StopWatch();
 

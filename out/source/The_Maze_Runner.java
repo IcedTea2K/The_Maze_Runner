@@ -44,7 +44,7 @@ int completions = 0; // number of times the players has gone through the maze
 public void setup() {
     
     mainMaze = new MazeMaker(width/2-225, height-250, 450, 240);
-    mainPlayer = new Player(mainMaze, mainMaze.getSquare(0,0));
+    mainPlayer = new Player(mainMaze);
 
     clock = new StopWatch();
 
@@ -500,7 +500,7 @@ public class MazeMaker { // create the maze
     }
 
     public PVector getLoc(){
-        return loc; // a clone just to be safe (since it's a pointer) 
+        return loc.copy(); // a copy just to be safe (since it's a pointer) 
     }
 }
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
@@ -540,7 +540,6 @@ public class MazeSquare{
                     line(verticies[x].x*size, verticies[x].y*size, verticies[0].x*size, verticies[0].y*size);  
             }
         }
-        
         popMatrix();
     }
 
@@ -548,7 +547,7 @@ public class MazeSquare{
         return loc.copy();
     }
 
-    public float[] getBoundary(){
+    public float[] getBoundary(){ // return the boundaries of the box
         float[] boundary = new float[4];
         for(int x = 0; x < 4; x++){
             if(x%2 == 0){ // top and bottom
@@ -560,7 +559,7 @@ public class MazeSquare{
         return boundary;
     }
 
-    public PVector[] getBoundaryVerticies(){ 
+    public PVector[] getBoundaryVerticies(){  // return the verticies of the boundary in actual units (instead of just the signs)
        PVector[] boundary = new PVector[4];
        
        for(int x = 0; x < 4; x++){
@@ -570,7 +569,7 @@ public class MazeSquare{
     }
 
     public int[] getIdx(){
-        return idx.clone();
+        return idx.clone(); // clone just to be safe
     }
     
     public void removeSide(MazeSquare neighbor){
@@ -578,7 +577,7 @@ public class MazeSquare{
         int tempColumnIdxDiff = neighbor.getIdx()[0] - idx[0]; 
         int tempRowIdxDiff = neighbor.getIdx()[1] - idx[1];
 
-        if(tempColumnIdxDiff < 0)
+        if(tempColumnIdxDiff < 0) // remove the side based on its targeted neighbor
             isClosed[3] = false;
         else if(tempRowIdxDiff < 0)
             isClosed[0] = false;
@@ -588,7 +587,7 @@ public class MazeSquare{
             isClosed[2] = false;
     }
 
-    public void removeSide(int side){
+    public void removeSide(int side){ // remove a specific side
         isClosed[side] = false;
     }
 
@@ -597,11 +596,11 @@ public class MazeSquare{
         isClosed[side] = true;
     }
 
-    public void visit(){
+    public void visit(){ // mark this square as visited
         alreadyVisited = true;
     }
 
-    public boolean hasVisited(){
+    public boolean hasVisited(){ // return the availaibility of this square
         return alreadyVisited;
     }
 }
@@ -609,7 +608,7 @@ public class Player {
     PVector loc = new PVector(0,0);
     float speed = 0.5f;
     int size = 6;
-    float heading = 0;
+    float heading = 0; // where it is going toward
     boolean isDone = false;
 
     MazeSquare currSquare;
@@ -617,14 +616,11 @@ public class Player {
     MazeMaker maze;
     boolean[] bufferZones = {false, false, false, false}; // the zone between actual boundary and collision boundary
                                                             // top - right - bottom - left
-    HashSet<MazeSquare> track = new HashSet<MazeSquare>();
-    ArrayList<Ray> playerVisibility = new ArrayList<Ray>();
-    public Player (MazeMaker maze, MazeSquare firstSquare) {
+    HashSet<MazeSquare> track = new HashSet<MazeSquare>(); // the squares the player has gone through
+    ArrayList<Ray> playerVisibility = new ArrayList<Ray>(); // container for all the rays
+    public Player (MazeMaker maze) {
         this.maze = maze;
-        currSquare = firstSquare;
-        currSquareIdx = currSquare.getIdx();
-        loc.x = firstSquare.getLocation().x + firstSquare.size/2;
-        loc.y = firstSquare.getLocation().y + firstSquare.size/2;
+        this.reset();
     }
 
     public void move(boolean[] input){
