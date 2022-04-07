@@ -1,7 +1,7 @@
 public class StopWatch {
     float startTime = 0;
     float endTime = 0;
-    boolean running = false;
+    boolean running = false; // is the clock still running?
     float bestTime = Float.POSITIVE_INFINITY;  // the best/fastest time of completion
 
     void start(){
@@ -30,7 +30,7 @@ public class StopWatch {
         return round(t/1000) % 60;
     }
 
-    float minute(float t){
+    float minute(float t){ // calculate any given value in ms
         return round(t/(1000*60)) % 60;
     }
 
@@ -54,11 +54,11 @@ public class StopWatch {
         return df.format(m) + ":" + df.format(s) + "." + df.format(ms);
     }
 
-    void evaluate(){
+    void evaluate(){ // was that the fastest run or no?
         bestTime = (clock.getEllapsedTime() < bestTime) ? clock.getEllapsedTime() : bestTime;
     }
 
-    String getBestTimeStr(){
+    String getBestTimeStr(){ // best time but in a proper format instead of ms
         return (Float.isInfinite(bestTime)) ? this.timeInText(0.) : this.timeInText(bestTime);
     }
 
@@ -68,9 +68,9 @@ public class StopWatch {
         textFont(font, 20);
         
         fill(0,255,0);
-        text("Current Time", 106, 570);
+        text("Current Time", 106, 570); // label
         text(currTimeStr, 106, 590);
-        text("Best Time", 106, 630);
+        text("Best Time", 106, 630); // label
         text(bestTimeStr, 106, 650); 
     }
 
