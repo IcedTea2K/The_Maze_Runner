@@ -805,11 +805,11 @@ public class Player {
         fill(0,255,0);
         if(currSquareIdx[1] < 0){ 
             // uncomment the following 3-lines to for cheat code --> go back into the entrace will get you to the exit //
-            loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
-            loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
-            currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
+            // loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
+            // loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
+            // currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
             
-            // this.reset(); // then comment this for the cheat code to actually work//
+            this.reset(); // ***** then comment this for the cheat code to actually work ****** //
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
             maze.makeMaze(); // restart the maze
             this.reset();
