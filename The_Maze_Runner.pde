@@ -20,6 +20,10 @@
 * + End Scene - shows the stats of the player (best time + number of completions)
 * User will be interacting with buttons which are self-explanatory. To view the key bindings of movement,
 * refer to the How to play scene.
+*
+* ##### I understand that the maze takes really long (~3mins) to finish so I put in some cheat code in the 
+* ##### file Player.pde on line 158. It just basically allows you to teleport to the end of the maze by passing
+* ##### through the green gate.
 */
 
 import java.util.*;

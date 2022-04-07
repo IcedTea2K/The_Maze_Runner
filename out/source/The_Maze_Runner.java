@@ -17,6 +17,34 @@ import java.io.IOException;
 
 public class The_Maze_Runner extends PApplet {
 
+/************************ Main Program ************************/
+/*
+* Minh Au
+* Comp Sci 30
+* The Maze Runner!!!
+* Descriptions: Welcome to the maze where not everyone can escape. Solve the 3D (and 2D) maze
+* in the shortest time possible. The program uses depth-first search algorithm to generate the maze randomly.
+* So knock yourself out with unlimited number of mazes. Ray casting algorithm is also used to 
+* establish the player's Field of View (FOV) in both the 2D map and 3D view. 
+* The 3D view is not exactly 3D. It is divided into many small sections that represent a ray. Then the brightness
+* and height of section are manipulated to create a sense of distance. NOTE, it is by no means a perfect 3D view
+* so when it feels like you're stuck and can't move despite the clear area ahead, you are actually colliding
+* with a wall. SO use the 2D map to get yourself out of that situation. 
+* 
+* There are 4 main scenes:
+* + Start menu - have the option to start the game or to view the instructions
+* + How to play - instructions on how to play the game. Press any of the arrows for cool interactions
+* + Game Play (or Main Scene) - display 3D view and 2D map. Player has the option to view solution,
+* enter hardcore mode (TRY IT OUT!!) or quit the game
+* + End Scene - shows the stats of the player (best time + number of completions)
+* User will be interacting with buttons which are self-explanatory. To view the key bindings of movement,
+* refer to the How to play scene.
+*
+* ##### I understand that the maze takes really long (~3mins) to finish so I put in some cheat code in the 
+* ##### file Player.pde on line 158. It just basically allows you to teleport to the end of the maze by passing
+* ##### through the green gate.
+*/
+
 
 
 MazeMaker mainMaze;
@@ -302,6 +330,11 @@ public void keyPressed() {
 public void keyReleased() {
   if(key==CODED) setDirection(keyCode, false);
 }
+/************************ Button ************************/
+/*
+* This is only a class for buttons. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class Button {
     final String message;
     private float buttonHeight;
@@ -356,6 +389,11 @@ public class Button {
         isActive = false;
     }
 }
+/************************ Maze Maker ************************/
+/*
+* This is only a class for maze generator. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class MazeMaker { // create the maze
     PVector size; 
     final PVector loc;    
@@ -503,6 +541,11 @@ public class MazeMaker { // create the maze
         return loc.copy(); // a copy just to be safe (since it's a pointer) 
     }
 }
+/************************ Maze Square ************************/
+/*
+* This is only a class for the squares of the maze/grid. 
+* For the main program please view The_Maze_Runner.pde
+*/
 PVector[] verticies = {new PVector(0,0), new PVector(1,0),
     new PVector(1,1), new PVector(0,1)}; // starts top-left then go clock-wise
 
@@ -604,6 +647,11 @@ public class MazeSquare{
         return alreadyVisited;
     }
 }
+/************************ Player ************************/
+/*
+* This is only a class for player. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class Player {
     PVector loc = new PVector(0,0);
     float speed = 0.5f;
@@ -757,11 +805,11 @@ public class Player {
         fill(0,255,0);
         if(currSquareIdx[1] < 0){ 
             // uncomment the following 3-lines to for cheat code --> go back into the entrace will get you to the exit //
-            // loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
-            // loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
-            // currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
+            loc.y = maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().y + maze.squareSize;
+            loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
+            currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
             
-            this.reset(); // then comment this for the cheat code to actually work//
+            // this.reset(); // then comment this for the cheat code to actually work//
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
             maze.makeMaze(); // restart the maze
             this.reset();
@@ -784,6 +832,11 @@ public class Player {
         display();
     }
 }
+/************************ Ray ************************/
+/*
+* This is only an object for the implementation of rays of
+* visibility. For the main program please view The_Maze_Runner.pde
+*/
 public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
@@ -844,6 +897,11 @@ public class Ray{
         line(pos.x, pos.y, intersection.x , intersection.y);
     }
 }
+/************************ Stop Watch ************************/
+/*
+* This is only an object for stopwatch. For the main program
+* please view The_Maze_Runner.pde
+*/
 public class StopWatch {
     float startTime = 0;
     float endTime = 0;

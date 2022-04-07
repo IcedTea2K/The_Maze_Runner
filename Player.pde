@@ -160,7 +160,7 @@ public class Player {
             // loc.x += maze.getSquare(maze.rows - 1, maze.columns - 1).getLocation().x; 
             // currSquareIdx = maze.getSquare(maze.rows - 1, maze.columns - 1).getIdx(); 
             
-            this.reset(); // then comment this for the cheat code to actually work//
+            this.reset(); // ***** then comment this for the cheat code to actually work ****** //
         }else if(currSquareIdx[1] >= maze.allSquares.size()){
             maze.makeMaze(); // restart the maze
             this.reset();
