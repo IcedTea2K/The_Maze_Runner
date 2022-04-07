@@ -1,8 +1,8 @@
 public class Ray{
     PVector pos;
     PVector direction = new PVector(0,0);
-    PVector intersection = null;
-    float heading;
+    PVector intersection = null; // the point of intersection with the targeted boundary
+    float heading; // used to created the vector direction
 
     boolean facingEntry = false;
     boolean facingExit = false;
@@ -13,7 +13,7 @@ public class Ray{
         this.heading = angle;
     }
 
-    boolean intersect(PVector start, PVector end){
+    boolean intersect(PVector start, PVector end){ 
         // L1 = boundary; L2 = ray
         // L1: (x1, y1) = start; (x2, y2) = end
         // L2: (x3, y3) = pos; (x4, y4) = pos + direction
@@ -29,7 +29,7 @@ public class Ray{
         float x4 = direction.x + pos.x;
         float y4 = direction.y + pos.y;
 
-        float denominator = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+        float denominator = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4); // pure math to detect the intersection between two segments
         float t = ((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/denominator;
         float u = ((x1-x3)*(y1-y2)-(y1-y3)*(x1-x2))/denominator; 
 
@@ -39,21 +39,21 @@ public class Ray{
             );
             intersection = temp;
             if(intersection.x >= 0 && intersection.x<=15
-                && intersection.y == 0)
+                && intersection.y == 0) // check facing the entry
                 facingEntry = true;
             else if(intersection.x >= 435 && intersection.x <= 450
                 && intersection.y == 240)
-                facingExit = true;
+                facingExit = true; // checking facing the exit
             return true;
         }
         return false;
     }
 
-    float distanceToIntersection(){
+    float distanceToIntersection(){ // calculate the distance of player to intersection (Duhhh!!!)
         return dist(pos.x, pos.y, intersection.x, intersection.y);
     }
 
-    void connectIntersect(){
+    void connectIntersect(){ // draw the ray 
         stroke(255);  
         line(pos.x, pos.y, intersection.x , intersection.y);
     }
